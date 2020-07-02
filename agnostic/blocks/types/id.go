@@ -4,6 +4,10 @@ type IdTypeDescription struct {
 	id string
 }
 
+func NewIdTypeDescription(id string) IdTypeDescription {
+	return IdTypeDescription{id: id}
+}
+
 func (i IdTypeDescription) Classification() TypeClassification {
 	return IdClassification
 }

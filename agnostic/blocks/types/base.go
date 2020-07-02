@@ -47,6 +47,10 @@ type BaseTypeDescription struct {
 	baseType BaseType
 }
 
+func NewBaseTypeDescription(baseType BaseType) BaseTypeDescription {
+	return BaseTypeDescription{baseType: baseType}
+}
+
 func (b BaseTypeDescription) Classification() TypeClassification {
 	return BaseClassification
 }

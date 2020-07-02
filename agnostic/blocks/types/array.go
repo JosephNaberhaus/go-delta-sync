@@ -4,6 +4,10 @@ type ArrayTypeDescription struct {
 	elementDescription TypeDescription
 }
 
+func NewArrayTypeDescription(elementDescription TypeDescription) ArrayTypeDescription {
+	return ArrayTypeDescription{elementDescription: elementDescription}
+}
+
 func (a ArrayTypeDescription) Classification() TypeClassification {
 	return ArrayClassification
 }

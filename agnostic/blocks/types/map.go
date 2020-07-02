@@ -1,8 +1,11 @@
 package types
 
 type MapTypeDescription struct {
-	keyDescription TypeDescription
-	valueDescription TypeDescription
+	keyDescription, valueDescription TypeDescription
+}
+
+func NewMapTypeDescription(keyDescription, valueDescription TypeDescription) MapTypeDescription {
+	return MapTypeDescription{keyDescription: keyDescription, valueDescription: valueDescription}
 }
 
 func (m MapTypeDescription) Classification() TypeClassification {
