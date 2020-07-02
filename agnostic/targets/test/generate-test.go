@@ -4,8 +4,8 @@ import (
 	"errors"
 	"flag"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	. "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
+	. "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"strings"
 )
 
@@ -59,13 +59,29 @@ func main() {
 	implementation.Write("agnostic-test")
 }
 
-func GenerateImplementationTest(implementation blocks.Implementation) {
+func GenerateImplementationTest(implementation Implementation) {
 	implementation.Model("TestEmptyModel")
 	implementation.Model(
 		"TestModel",
-		blocks.Field{Name: "IntField", TypeDescription: types.NewBaseTypeDescription(types.BaseTypeInt)},
+		Field{Name: "IntField", TypeDescription: NewBaseTypeDescription(BaseTypeInt)},
+		Field{Name: "Int8Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt8)},
+		Field{Name: "Int16Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt16)},
+		Field{Name: "Int32Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt32)},
+		Field{Name: "Int64Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt64)},
+		Field{Name: "UIntField", TypeDescription: NewBaseTypeDescription(BaseTypeUInt)},
+		Field{Name: "UInt8Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt8)},
+		Field{Name: "UInt16Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt16)},
+		Field{Name: "UInt32Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt32)},
+		Field{Name: "UInt64Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt64)},
+		Field{Name: "UIntPtrField", TypeDescription: NewBaseTypeDescription(BaseTypeUIntPtr)},
+		Field{Name: "ByteField", TypeDescription: NewBaseTypeDescription(BaseTypeByte)},
+		Field{Name: "RuneField", TypeDescription: NewBaseTypeDescription(BaseTypeRune)},
+		Field{Name: "Float32Field", TypeDescription: NewBaseTypeDescription(BaseTypeFloat32)},
+		Field{Name: "Float64Field", TypeDescription: NewBaseTypeDescription(BaseTypeFloat64)},
+		Field{Name: "Complex64Field", TypeDescription: NewBaseTypeDescription(BaseTypeComplex64)},
+		Field{Name: "Complex128Field", TypeDescription: NewBaseTypeDescription(BaseTypeComplex128)},
 	)
 
-	testParameter := blocks.Field{Name: "testParameter", TypeDescription: types.NewBaseTypeDescription(types.BaseTypeInt)}
+	testParameter := Field{Name: "testParameter", TypeDescription: NewBaseTypeDescription(BaseTypeInt)}
 	implementation.Method("TestModel", "TestMethod", testParameter)
 }
