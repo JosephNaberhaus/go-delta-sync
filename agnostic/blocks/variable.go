@@ -1,6 +1,6 @@
 package blocks
 
-type Value interface { }
+type Value interface{}
 
 // Refers to a literal string value
 type StringValue struct {
@@ -76,7 +76,7 @@ func (m MapValue) Map() Value {
 // Refers to an element inside of a map
 type MapValue struct {
 	mapValue Value
-	key Value
+	key      Value
 }
 
 func (m MapValue) Key() Value {
