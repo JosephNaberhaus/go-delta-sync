@@ -19,6 +19,6 @@ type Implementation interface {
 
 type BodyImplementation interface {
 	Assign(assignee, assigned Value)
-	ForEach(array Value, valueName string) BodyImplementation
+	ForEach(array Value, indexName, valueName string) BodyImplementation
 	If(value1 Value, operator ComparisonOperator, value2 Value) BodyImplementation
 }
