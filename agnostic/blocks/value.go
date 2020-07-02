@@ -2,6 +2,9 @@ package blocks
 
 type Value interface{}
 
+// Refers to a literal null/nil/empty value
+type NullValue = Value
+
 // Refers to a literal string value
 type StringValue struct {
 	value string
