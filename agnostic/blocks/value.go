@@ -42,7 +42,13 @@ func (o OwnProperty) Name() string {
 }
 
 // Refers to a variable that is within scope of the current block
-type Variable = OwnProperty
+type Variable struct {
+	name string
+}
+
+func (v Variable) Name() string {
+	return v.name
+}
 
 // Refers to a property that is part of another model. Note that model name is the name of the variable/parameter that
 // contains the model and not the name of the model itself
