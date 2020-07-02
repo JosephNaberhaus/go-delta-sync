@@ -1,4 +1,4 @@
-//go:generate go run ../test/generate-test.go --output implementation-test.go --impl go --implArg package:golang
+//go:generate go run ../test/generate-test.go --impl go --implArg package:golang
 
 package golang
 
@@ -31,7 +31,7 @@ func (g *GoBodyImplementation) Add(c ...Code) {
 func (g *GoImplementation) Write(fileName string) {
 	jenFile := NewFile(g.packageName)
 	jenFile.Add(g.code...)
-	err := jenFile.Save(fileName)
+	err := jenFile.Save(fileName + ".go")
 	if err != nil {
 		panic(err)
 	}
