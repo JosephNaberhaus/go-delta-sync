@@ -10,6 +10,10 @@ const (
 	Modulo   MathOperator = "%"
 )
 
+func (m MathOperator) Value() string {
+	return string(m)
+}
+
 type ComparisonOperator string
 
 const (
@@ -20,3 +24,7 @@ const (
 	LessThan           ComparisonOperator = "<"
 	LassThanOrEqualTo  ComparisonOperator = "<="
 )
+
+func (c ComparisonOperator) Value() string {
+	return string(c)
+}
