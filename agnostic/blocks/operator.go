@@ -1,4 +1,4 @@
-package types
+package blocks
 
 type MathOperator string
 
