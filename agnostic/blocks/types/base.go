@@ -4,43 +4,43 @@ package types
 // written to panic when that occurs.
 type BaseType int
 const (
-	intType BaseType = iota
-	int8Type
-	int16Type
-	int32Type
-	int64Type
-	uintType
-	uint8Type
-	uint16Type
-	uint32Type
-	uint64Type
-	uintptrType
-	byteType
-	runeType
-	float32Type
-	float64Type
-	complex64Type
-	complex128Type
+	BaseTypeInt BaseType = iota
+	BaseTypeInt8
+	BaseTypeInt16
+	BaseTypeInt32
+	BaseTypeInt64
+	BaseTypeUInt
+	BaseTypeUInt8
+	BaseTypeUInt16
+	BaseTypeUInt32
+	BaseTypeUInt64
+	BaseTypeUIntPtr
+	BaseTypeByte
+	BaseTypeRune
+	BaseTypeFloat32
+	BaseTypeFloat64
+	BaseTypeComplex64
+	BaseTypeComplex128
 )
 
 var BaseTypeToGoValue = map[BaseType]string {
-	intType: "intType",
-	int8Type: "int8Type",
-	int16Type: "int16Type",
-	int32Type: "int32Type",
-	int64Type: "int64Type",
-	uintType: "uintType",
-	uint8Type: "uint8Type",
-	uint16Type: "uint16Type",
-	uint32Type: "uint32Type",
-	uint64Type: "uint64Type",
-	uintptrType: "uintptrType",
-	byteType: "byteType",
-	runeType: "runeType",
-	float32Type: "float32Type",
-	float64Type: "float64Type",
-	complex64Type: "complex64Type",
-	complex128Type: "complex128Type",
+	BaseTypeInt: "int",
+	BaseTypeInt8: "int8",
+	BaseTypeInt16: "int16",
+	BaseTypeInt32: "int32",
+	BaseTypeInt64: "int64",
+	BaseTypeUInt: "uint",
+	BaseTypeUInt8: "uint8",
+	BaseTypeUInt16: "uint16",
+	BaseTypeUInt32: "uint32",
+	BaseTypeUInt64: "uint64",
+	BaseTypeUIntPtr: "uintptr",
+	BaseTypeByte: "byte",
+	BaseTypeRune: "rune",
+	BaseTypeFloat32: "float32",
+	BaseTypeFloat64: "float64",
+	BaseTypeComplex64: "complex64",
+	BaseTypeComplex128: "complex128",
 }
 
 type BaseTypeDescription struct {
