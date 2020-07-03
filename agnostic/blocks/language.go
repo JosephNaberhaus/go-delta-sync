@@ -25,6 +25,32 @@ type BodyImplementation interface {
 	// Go Code: `<declared> := <value>`
 	Declare(declared VariableStruct, value Value)
 
+	// Appends a value to the end of an array and ensures that the array value
+	// points to the result. This comes with no guarantees that a different
+	// reference to the array will not also be modified
+	// Go Code: '<array> = append(<array>, <value>)`
+	AppendValue(array, value Value)
+	// Appends an array to the end of another array and ensures that the array
+	// value points to the result. This comes with no guarantee that a
+	// different reference to the array that was appended to will not also be
+	// modified. However, the value array will not be altered
+	// Go Code: `<array> = append(<array>, <valueArray>...)`
+	AppendArray(array, valueArray Value)
+	// Remove the value at index from the array. The order of the array must
+	// not be altered by this operation and it must leave no gap from where the
+	// element was removed.
+	// Go Code: `<array> = append<array[:<index>], <array>[<index>+1:]...)`
+	RemoveValue(array, index Value)
+
+	// Sets key to value in the map, overriding an existing value or creating a
+	// new entry a necessary
+	// Go Code: `<mapValue>[<key>] = <value>`
+	MapPut(mapValue, key, value Value)
+	// Deleted the given value from the map. However this is performed the key
+	// must be considered to no longer exist on the map
+	// Go Code: `delete(<mapValue>, <key>)`
+	MapDelete(mapValue, key Value)
+
 	// Iterates through every value of the given array. Index name and value
 	// are to be variables containing the equivalent of a zero based index and
 	// the value at that index. An empty string for a name will  to indicate to
