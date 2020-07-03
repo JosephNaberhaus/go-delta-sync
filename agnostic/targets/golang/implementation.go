@@ -71,6 +71,29 @@ func (g *GoBodyImplementation) Declare(declared blocks.VariableStruct, value blo
 	g.Add(resolveValue(declared, g).Op(":=").Add(resolveValue(value, g)))
 }
 
+func (g *GoBodyImplementation) AppendValue(array, value blocks.Value) {
+	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(value, g)))
+}
+
+func (g *GoBodyImplementation) AppendArray(array, valueArray blocks.Value) {
+	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(valueArray, g).Op("...")))
+}
+
+func (g *GoBodyImplementation) RemoveValue(array, index blocks.Value) {
+	g.Add(resolveValue(array, g).Op("=").Append(
+		resolveValue(array, g).Index(Op(":").Add(resolveValue(index, g))),
+		resolveValue(array, g).Index(resolveValue(index, g).Op("+").Lit(1).Op(":")),
+	))
+}
+
+func (g *GoBodyImplementation) MapPut(mapValue, key, value blocks.Value) {
+	g.Add(resolveValue(mapValue, g).Index(resolveValue(key, g)).Op("=").Add(resolveValue(value, g)))
+}
+
+func (g *GoBodyImplementation) MapDelete(mapValue, key blocks.Value) {
+	g.Add(Delete(resolveValue(mapValue, g), resolveValue(key, g)))
+}
+
 func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName string) blocks.BodyImplementation {
 	if indexName == "" {
 		indexName = "_"
