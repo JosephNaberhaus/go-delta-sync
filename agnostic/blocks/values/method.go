@@ -3,13 +3,13 @@ package values
 // Refers to a field that is a part of the model whose method is being called
 type OwnField struct {
 	valueType
-	field Value
+	field Any
 }
 
-func (o OwnField) Field() Value {
+func (o OwnField) Field() Any {
 	return o.field
 }
 
-func NewOwnField(field Value) OwnField {
+func NewOwnField(field Any) OwnField {
 	return OwnField{field: field}
 }

@@ -3,19 +3,19 @@ package values
 // Refers to an element contained by an array
 type Array struct {
 	valueType
-	array Value
-	index Value
+	array Any
+	index Any
 }
 
-func (a Array) Array() Value {
+func (a Array) Array() Any {
 	return a.array
 }
 
-func (a Array) Index() Value {
+func (a Array) Index() Any {
 	return a.index
 }
 
-func NewArray(array, index Value) Array {
+func NewArray(array, index Any) Array {
 	return Array{
 		array: array,
 		index: index,
