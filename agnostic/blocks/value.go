@@ -48,6 +48,19 @@ func FloatValue(value float64) FloatValueStruct {
 	return FloatValueStruct{value: value}
 }
 
+// Refers to a literal boolean value
+type BoolValueStruct struct {
+	value bool
+}
+
+func (b BoolValueStruct) Value() bool {
+	return b.value
+}
+
+func BoolValue(value bool) BoolValueStruct {
+	return BoolValueStruct{value: value}
+}
+
 // Refers to a property that is a part of the model whose method is being called
 type OwnPropertyStruct struct {
 	name string
