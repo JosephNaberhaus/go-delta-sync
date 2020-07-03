@@ -100,23 +100,23 @@ func Implementation(args map[string]string) blocks.Implementation {
 // Convert a value interface into its representation into Go code form
 func resolveValue(value blocks.Value, context *GoBodyImplementation) *Statement {
 	switch v := value.(type) {
-	case blocks.NullValue:
+	case blocks.NullValueStruct:
 		return Nil()
-	case blocks.StringValue:
+	case blocks.StringValueStruct:
 		return Lit(v.Value())
-	case blocks.IntValue:
+	case blocks.IntValueStruct:
 		return Lit(v.Value())
-	case blocks.FloatValue:
+	case blocks.FloatValueStruct:
 		return Lit(v.Value())
-	case blocks.OwnProperty:
+	case blocks.OwnPropertyStruct:
 		return Id(context.receiverName).Dot(v.Name())
-	case blocks.Variable:
+	case blocks.VariableStruct:
 		return Id(v.Name())
-	case blocks.ModelProperty:
+	case blocks.ModelPropertyStruct:
 		return Id(v.ModelName()).Dot(v.Name())
-	case blocks.ArrayValue:
+	case blocks.ArrayValueStruct:
 		return resolveValue(v.Array(), context).Index(resolveValue(v.Index(), context))
-	case blocks.MapValue:
+	case blocks.MapValueStruct:
 		return resolveValue(v.Map(), context).Index(resolveValue(v.Key(), context))
 	default:
 		panic(errors.New("unknown value type " + fmt.Sprintf("%T", v)))
