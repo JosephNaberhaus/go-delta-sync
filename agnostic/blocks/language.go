@@ -76,18 +76,10 @@ type BodyImplementation interface {
 	// Go Code: `for <indexName>, <valueName> := range <array> { <body> }
 	ForEach(array Value, indexName, valueName string) BodyImplementation
 
-	// Performs a comparison operation on the two values and executed the body
-	// if the result is true
-	// Go Code: `if <value1> <operator> <value2> { <body> }
-	If(value1 Value, operator ComparisonOperator, value2 Value) BodyImplementation
-	// Performs a comparison operation on the two values and executes the true
-	// body if the result is true and the false body otherwise
-	// Go Code: `if <value1> <operator> <value2> { <true block> } else { <false block> }
-	IfElse(value1 Value, operator ComparisonOperator, value2 Value) (TrueBody, FalseBody BodyImplementation)
 	// Executes the body if the value is true
 	// Go Code: `if <value> { <body> }
-	IfBool(value Value) BodyImplementation
+	If(value Value) BodyImplementation
 	// Execute the true body if the value is true and the false body otherwise
 	// Go Code: `if <value> { <true body> } else { <false body> }
-	IfElseBool(value Value) (TrueBody, FalseBody BodyImplementation)
+	IfElse(value Value) (TrueBody, FalseBody BodyImplementation)
 }
