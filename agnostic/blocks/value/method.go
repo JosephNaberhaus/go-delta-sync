@@ -1,4 +1,4 @@
-package values
+package value
 
 // Refers to a field that is a part of the model whose method is being called
 type OwnField struct {

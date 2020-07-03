@@ -1,4 +1,4 @@
-package values
+package value
 
 // Anything that represents a value that exists within the context of a
 // methods body

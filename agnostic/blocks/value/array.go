@@ -1,4 +1,4 @@
-package values
+package value
 
 // Refers to an element contained by an array
 type Array struct {

@@ -1,10 +1,10 @@
 package types
 
-type ArrayTypeDescription struct {
+type Array struct {
 	elementDescription TypeDescription
 }
 
-func NewArrayTypeDescription(elementDescription TypeDescription) ArrayTypeDescription {
+func NewArrayDescription(elementDescription TypeDescription) ArrayTypeDescription {
 	return ArrayTypeDescription{elementDescription: elementDescription}
 }
 

@@ -1,4 +1,4 @@
-package values
+package value
 
 // Refers to a property that is part of another model
 type ModelField struct {

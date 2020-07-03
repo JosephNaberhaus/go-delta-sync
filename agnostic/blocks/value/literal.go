@@ -1,4 +1,4 @@
-package values
+package value
 
 // Refers to a literal null/nil/empty value
 type Null struct {
