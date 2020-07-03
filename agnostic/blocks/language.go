@@ -2,6 +2,7 @@ package blocks
 
 import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/values"
 )
 
 type ModelName string
@@ -32,10 +33,10 @@ type Implementation interface {
 type BodyImplementation interface {
 	// Assigns the value at assigned to assignee
 	// Go Code: `<assignee> = <assigned>`
-	Assign(assignee, assigned Value)
+	Assign(assignee, assigned values.Any)
 	// Declares a new variable with the given value
 	// Go Code: `<name> := <value>`
-	Declare(name string, value Value)
+	Declare(name string, value values.Any)
 	// Declares a new array variable containing values of the given type
 	// Go Code: `<name> := make(<arrayType>[]>, 0)
 	DeclareArray(name string, arrayType types.TypeDescription)
@@ -47,39 +48,39 @@ type BodyImplementation interface {
 	// points to the result. This comes with no guarantees that a different
 	// reference to the array will not also be modified
 	// Go Code: '<array> = append(<array>, <value>)`
-	AppendValue(array, value Value)
+	AppendValue(array, value values.Any)
 	// Appends an array to the end of another array and ensures that the array
 	// value points to the result. This comes with no guarantee that a
 	// different reference to the array that was appended to will not also be
 	// modified. However, the value array will not be altered
 	// Go Code: `<array> = append(<array>, <valueArray>...)`
-	AppendArray(array, valueArray Value)
+	AppendArray(array, valueArray values.Any)
 	// Remove the value at index from the array. The order of the array must
 	// not be altered by this operation and it must leave no gap from where the
 	// element was removed.
 	// Go Code: `<array> = append<array[:<index>], <array>[<index>+1:]...)`
-	RemoveValue(array, index Value)
+	RemoveValue(array, index values.Any)
 
 	// Sets key to value in the map, overriding an existing value or creating a
 	// new entry a necessary
 	// Go Code: `<mapValue>[<key>] = <value>`
-	MapPut(mapValue, key, value Value)
+	MapPut(mapValue, key, value values.Any)
 	// Deleted the given value from the map. However this is performed the key
 	// must be considered to no longer exist on the map
 	// Go Code: `delete(<mapValue>, <key>)`
-	MapDelete(mapValue, key Value)
+	MapDelete(mapValue, key values.Any)
 
 	// Iterates through every value of the given array. Index name and value
 	// are to be variables containing the equivalent of a zero based index and
 	// the value at that index. An empty string for a name will  to indicate to
 	// the implementation that the value is not used
 	// Go Code: `for <indexName>, <valueName> := range <array> { <body> }
-	ForEach(array Value, indexName, valueName string) BodyImplementation
+	ForEach(array values.Any, indexName, valueName string) BodyImplementation
 
 	// Executes the body if the value is true
 	// Go Code: `if <value> { <body> }
-	If(value Value) BodyImplementation
+	If(value values.Any) BodyImplementation
 	// Execute the true body if the value is true and the false body otherwise
 	// Go Code: `if <value> { <true body> } else { <false body> }
-	IfElse(value Value) (TrueBody, FalseBody BodyImplementation)
+	IfElse(value values.Any) (TrueBody, FalseBody BodyImplementation)
 }
