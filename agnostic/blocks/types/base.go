@@ -22,6 +22,8 @@ const (
 	BaseTypeFloat64
 	BaseTypeComplex64
 	BaseTypeComplex128
+	BaseTypeBool
+	BaseTypeString
 )
 
 var BaseTypeToGoValue = map[BaseType]string{
@@ -42,6 +44,8 @@ var BaseTypeToGoValue = map[BaseType]string{
 	BaseTypeFloat64:    "float64",
 	BaseTypeComplex64:  "complex64",
 	BaseTypeComplex128: "complex128",
+	BaseTypeBool:       "bool",
+	BaseTypeString:     "string",
 }
 
 type BaseTypeDescription struct {
