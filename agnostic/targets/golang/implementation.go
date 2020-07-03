@@ -180,6 +180,8 @@ func resolveValue(value values.Any, context *GoBodyImplementation) *Statement {
 		return resolveValue(v.Array(), context).Index(resolveValue(v.Index(), context))
 	case values.Map:
 		return resolveValue(v.Map(), context).Index(resolveValue(v.Key(), context))
+	case values.Combined:
+		return resolveValue(v.Left(), context).Op(v.Operator().Value()).Add(resolveValue(v.Right(), context))
 	default:
 		panic(errors.New("unknown value type " + fmt.Sprintf("%T", v)))
 	}
