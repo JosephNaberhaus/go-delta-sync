@@ -27,7 +27,8 @@ type BodyImplementation interface {
 
 	// Iterates through every value of the given array. Index name and value
 	// are to be variables containing the equivalent of a zero based index and
-	// the value at that index
+	// the value at that index. An empty string for a name will  to indicate to
+	// the implementation that the value is not used
 	// Go Code: `for <indexName>, <valueName> := range <array> { <body> }
 	ForEach(array Value, indexName, valueName string) BodyImplementation
 

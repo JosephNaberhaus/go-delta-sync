@@ -72,6 +72,14 @@ func (g *GoBodyImplementation) Declare(declared blocks.VariableStruct, value blo
 }
 
 func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName string) blocks.BodyImplementation {
+	if indexName == "" {
+		indexName = "_"
+	}
+
+	if valueName == "" {
+		indexName = "_"
+	}
+
 	block := Null()
 	g.Add(For(Id(indexName), Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
 	return &GoBodyImplementation{
