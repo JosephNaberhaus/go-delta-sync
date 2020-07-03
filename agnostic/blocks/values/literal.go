@@ -1,7 +1,9 @@
 package values
 
 // Refers to a literal null/nil/empty value
-type Null struct{}
+type Null struct {
+	valueType
+}
 
 func NewNull() Null {
 	return Null{}
@@ -9,6 +11,7 @@ func NewNull() Null {
 
 // Refers to a literal string value
 type String struct {
+	valueType
 	value string
 }
 
@@ -22,6 +25,7 @@ func NewString(value string) String {
 
 // Refers a literal int value
 type Int struct {
+	valueType
 	value int
 }
 
@@ -35,6 +39,7 @@ func NewInt(value int) Int {
 
 // Refers to a literal floating point value
 type Float struct {
+	valueType
 	value float64
 }
 
@@ -48,6 +53,7 @@ func NewFloat(value float64) Float {
 
 // Refers to a literal boolean value
 type Bool struct {
+	valueType
 	value bool
 }
 

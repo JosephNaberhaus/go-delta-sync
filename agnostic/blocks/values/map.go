@@ -2,6 +2,7 @@ package values
 
 // Refers to an element inside of a map
 type Map struct {
+	valueType
 	mapValue Value
 	key      Value
 }

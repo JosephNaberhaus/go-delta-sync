@@ -2,6 +2,7 @@ package values
 
 // Refers to an element contained by an array
 type Array struct {
+	valueType
 	array Value
 	index Value
 }

@@ -2,6 +2,7 @@ package values
 
 // Refers to a property that is part of another model
 type ModelField struct {
+	valueType
 	modelName string
 	field     Value
 }

@@ -2,6 +2,7 @@ package values
 
 // Refers to a field that is a part of the model whose method is being called
 type OwnField struct {
+	valueType
 	field Value
 }
 

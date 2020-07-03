@@ -2,6 +2,7 @@ package values
 
 // A value within a name/id/variable
 type Id struct {
+	valueType
 	name string
 }
 
