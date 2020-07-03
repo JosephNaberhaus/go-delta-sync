@@ -1,7 +1,8 @@
 package values
 
-// A literal or reference to a value that exists inside of a methods body
-type Value interface {
+// Anything that represents a value that exists within the context of a
+// methods body
+type Any interface {
 	valueType()
 }
 
