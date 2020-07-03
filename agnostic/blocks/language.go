@@ -11,12 +11,24 @@ type Field struct {
 	TypeDescription types.TypeDescription
 }
 
+// A file in an arbitrary programming language
 type Implementation interface {
+	// Writes the current contents of the file to the given path. The path
+	// should exclude the extension which which will be added by the
+	// implementation
 	Write(fileName string)
-	Model(ModelName, ...Field)
+
+	// Creates a new model
+	// Go Code: type <name> struct { <fields> }
+	Model(name ModelName, fields ...Field)
+
+	// Create a new method. A method is simply a function that runs under the
+	// context of a model and has direct access to it's contents
+	// Go Code: func (<first character of modelName> *<modelName>) <methodName>(<parameters>) { <body> }
 	Method(modelName, methodName string, parameters ...Field) BodyImplementation
 }
 
+// An ordered set of logic that runs inside of a method.
 type BodyImplementation interface {
 	// Assigns the value at assigned to assignee
 	// Go Code: `<assignee> = <assigned>`
