@@ -13,7 +13,7 @@ func (a ArrayTypeDescription) Classification() TypeClassification {
 }
 
 func (a ArrayTypeDescription) Value() string {
-	return "[]" + a.Value()
+	return "[]" + a.elementDescription.Value()
 }
 
 func (a *ArrayTypeDescription) ElementDescription() TypeDescription {
