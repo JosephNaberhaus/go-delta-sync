@@ -58,7 +58,7 @@ func (g *GoImplementation) Method(modelName, methodName string, parameters ...bl
 	g.Add(Func().Params(Id(receiverName).Op("*").Id(modelName)).Id(methodName).Params(parametersCode...).Block(block))
 
 	return &GoBodyImplementation{
-		receiverName: modelName[:1],
+		receiverName: receiverName,
 		block:        block,
 	}
 }
