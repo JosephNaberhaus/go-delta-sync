@@ -21,4 +21,7 @@ type BodyImplementation interface {
 	Assign(assignee, assigned Value)
 	ForEach(array Value, indexName, valueName string) BodyImplementation
 	If(value1 Value, operator ComparisonOperator, value2 Value) BodyImplementation
+	IfElse(value1 Value, operator ComparisonOperator, value2 Value) (TrueBlock, FalseBlock BodyImplementation)
+	IfBool(value BoolValueStruct) BodyImplementation
+	IfElseBool(value BoolValueStruct) (TrueBlock, FalseBlock BodyImplementation)
 }
