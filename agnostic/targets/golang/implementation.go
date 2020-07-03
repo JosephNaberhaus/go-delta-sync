@@ -21,7 +21,7 @@ type GoBodyImplementation struct {
 }
 
 func (g *GoImplementation) Add(c ...Code) {
-	g.code = append(g.code, lines(c...))
+	g.code = append(g.code, c...)
 }
 
 func (g *GoBodyImplementation) Add(c ...Code) {
@@ -30,7 +30,7 @@ func (g *GoBodyImplementation) Add(c ...Code) {
 
 func (g *GoImplementation) Write(fileName string) {
 	jenFile := NewFile(g.packageName)
-	jenFile.Add(g.code...)
+	jenFile.Add(lines(g.code...))
 	err := jenFile.Save(fileName + ".go")
 	if err != nil {
 		panic(err)
@@ -206,8 +206,8 @@ func lines(statements ...Code) Code {
 		return Null()
 	}
 
-	combined := Null()
-	for _, statement := range statements {
+	combined := Add(statements[0])
+	for _, statement := range statements[1:] {
 		combined = combined.Line().Add(statement)
 	}
 
