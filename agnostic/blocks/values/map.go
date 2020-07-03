@@ -1,23 +1,23 @@
 package values
 
 // Refers to an element inside of a map
-type MapStruct struct {
+type Map struct {
 	mapValue Value
 	key      Value
 }
 
 // THe map that contains the value
-func (m MapStruct) Map() Value {
+func (m Map) Map() Value {
 	return m.mapValue
 }
 
 // The key of the element that is being referred to
-func (m MapStruct) Key() Value {
+func (m Map) Key() Value {
 	return m.key
 }
 
-func Map(mapValue, key Value) MapStruct {
-	return MapStruct{
+func NewMap(mapValue, key Value) Map {
+	return Map{
 		mapValue: mapValue,
 		key:      key,
 	}

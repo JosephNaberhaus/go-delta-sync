@@ -1,21 +1,21 @@
 package values
 
 // Refers to an element contained by an array
-type ArrayStruct struct {
+type Array struct {
 	array Value
 	index Value
 }
 
-func (a ArrayStruct) Array() Value {
+func (a Array) Array() Value {
 	return a.array
 }
 
-func (a ArrayStruct) Index() Value {
+func (a Array) Index() Value {
 	return a.index
 }
 
-func Array(array, index Value) ArrayStruct {
-	return ArrayStruct{
+func NewArray(array, index Value) Array {
+	return Array{
 		array: array,
 		index: index,
 	}

@@ -1,14 +1,14 @@
 package values
 
 // A value within a name/id/variable
-type IdStruct struct {
+type Id struct {
 	name string
 }
 
-func (v IdStruct) Name() string {
+func (v Id) Name() string {
 	return v.name
 }
 
-func Id(name string) IdStruct {
-	return IdStruct{name: name}
+func NewId(name string) Id {
+	return Id{name: name}
 }
