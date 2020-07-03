@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/values"
 	. "github.com/dave/jennifer/jen"
 	"strings"
 )
@@ -64,11 +65,11 @@ func (g *GoImplementation) Method(modelName, methodName string, parameters ...bl
 	}
 }
 
-func (g *GoBodyImplementation) Assign(assignee, assigned blocks.Value) {
+func (g *GoBodyImplementation) Assign(assignee, assigned values.Any) {
 	g.Add(resolveValue(assignee, g).Op("=").Add(resolveValue(assigned, g)))
 }
 
-func (g *GoBodyImplementation) Declare(name string, value blocks.Value) {
+func (g *GoBodyImplementation) Declare(name string, value values.Any) {
 	g.Add(Id(name).Op(":=").Add(resolveValue(value, g)))
 }
 
@@ -80,30 +81,30 @@ func (g *GoBodyImplementation) DeclareMap(name string, keyType, valueType types.
 	g.Add(Id(name).Op(":=").Make(Map(Id(keyType.Value())).Id(valueType.Value())))
 }
 
-func (g *GoBodyImplementation) AppendValue(array, value blocks.Value) {
+func (g *GoBodyImplementation) AppendValue(array, value values.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) AppendArray(array, valueArray blocks.Value) {
+func (g *GoBodyImplementation) AppendArray(array, valueArray values.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(valueArray, g).Op("...")))
 }
 
-func (g *GoBodyImplementation) RemoveValue(array, index blocks.Value) {
+func (g *GoBodyImplementation) RemoveValue(array, index values.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(
 		resolveValue(array, g).Index(Op(":").Add(resolveValue(index, g))),
 		resolveValue(array, g).Index(resolveValue(index, g).Op("+").Lit(1).Op(":")),
 	))
 }
 
-func (g *GoBodyImplementation) MapPut(mapValue, key, value blocks.Value) {
+func (g *GoBodyImplementation) MapPut(mapValue, key, value values.Any) {
 	g.Add(resolveValue(mapValue, g).Index(resolveValue(key, g)).Op("=").Add(resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) MapDelete(mapValue, key blocks.Value) {
+func (g *GoBodyImplementation) MapDelete(mapValue, key values.Any) {
 	g.Add(Delete(resolveValue(mapValue, g), resolveValue(key, g)))
 }
 
-func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName string) blocks.BodyImplementation {
+func (g *GoBodyImplementation) ForEach(array values.Any, indexName, valueName string) blocks.BodyImplementation {
 	if indexName == "" {
 		indexName = "_"
 	}
@@ -120,7 +121,7 @@ func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName 
 	}
 }
 
-func (g *GoBodyImplementation) If(value blocks.Value) blocks.BodyImplementation {
+func (g *GoBodyImplementation) If(value values.Any) blocks.BodyImplementation {
 	block := Null()
 	g.Add(If(resolveValue(value, g)).Block(block))
 
@@ -130,7 +131,7 @@ func (g *GoBodyImplementation) If(value blocks.Value) blocks.BodyImplementation 
 	}
 }
 
-func (g *GoBodyImplementation) IfElse(value blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
+func (g *GoBodyImplementation) IfElse(value values.Any) (trueBody, falseBody blocks.BodyImplementation) {
 	trueBlock, falseBlock := Null(), Null()
 	g.Add(If(resolveValue(value, g)).Block(trueBlock).Else().Block(falseBlock))
 
@@ -159,25 +160,25 @@ func Implementation(args map[string]string) blocks.Implementation {
 }
 
 // Convert a value interface into its representation into Go code form
-func resolveValue(value blocks.Value, context *GoBodyImplementation) *Statement {
+func resolveValue(value values.Any, context *GoBodyImplementation) *Statement {
 	switch v := value.(type) {
-	case blocks.NullValueStruct:
+	case values.Null:
 		return Nil()
-	case blocks.StringValueStruct:
+	case values.String:
 		return Lit(v.Value())
-	case blocks.IntValueStruct:
+	case values.Int:
 		return Lit(v.Value())
-	case blocks.FloatValueStruct:
+	case values.Float:
 		return Lit(v.Value())
-	case blocks.OwnPropertyStruct:
-		return Id(context.receiverName).Dot(v.Name())
-	case blocks.VariableStruct:
+	case values.OwnField:
+		return Id(context.receiverName).Op(".").Add(resolveValue(v.Field(), context))
+	case values.Id:
 		return Id(v.Name())
-	case blocks.ModelPropertyStruct:
-		return Id(v.ModelName()).Dot(v.Name())
-	case blocks.ArrayValueStruct:
+	case values.ModelField:
+		return Id(v.ModelName()).Op(".").Add(resolveValue(v.Field(), context))
+	case values.Array:
 		return resolveValue(v.Array(), context).Index(resolveValue(v.Index(), context))
-	case blocks.MapValueStruct:
+	case values.Map:
 		return resolveValue(v.Map(), context).Index(resolveValue(v.Key(), context))
 	default:
 		panic(errors.New("unknown value type " + fmt.Sprintf("%T", v)))
