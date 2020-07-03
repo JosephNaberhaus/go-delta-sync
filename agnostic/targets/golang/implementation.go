@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	. "github.com/dave/jennifer/jen"
 	"strings"
 )
@@ -67,8 +68,16 @@ func (g *GoBodyImplementation) Assign(assignee, assigned blocks.Value) {
 	g.Add(resolveValue(assignee, g).Op("=").Add(resolveValue(assigned, g)))
 }
 
-func (g *GoBodyImplementation) Declare(declared blocks.VariableStruct, value blocks.Value) {
-	g.Add(resolveValue(declared, g).Op(":=").Add(resolveValue(value, g)))
+func (g *GoBodyImplementation) Declare(name string, value blocks.Value) {
+	g.Add(Id(name).Op(":=").Add(resolveValue(value, g)))
+}
+
+func (g *GoBodyImplementation) DeclareArray(name string, arrayType types.TypeDescription) {
+	g.Add(Id(name).Op(":=").Make(Index().Id(arrayType.Value()), Lit(0)))
+}
+
+func (g *GoBodyImplementation) DeclareMap(name string, keyType, valueType types.TypeDescription) {
+	g.Add(Id(name).Op(":=").Make(Map(Id(keyType.Value())).Id(valueType.Value())))
 }
 
 func (g *GoBodyImplementation) AppendValue(array, value blocks.Value) {
@@ -111,32 +120,7 @@ func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName 
 	}
 }
 
-func (g *GoBodyImplementation) If(value1 blocks.Value, operator blocks.ComparisonOperator, value2 blocks.Value) blocks.BodyImplementation {
-	block := Null()
-	g.Add(If(resolveValue(value1, g).Op(operator.Value()).Add(resolveValue(value2, g))).Block(block))
-	return &GoBodyImplementation{
-		receiverName: g.receiverName,
-		block:        block,
-	}
-}
-
-func (g *GoBodyImplementation) IfElse(value1 blocks.Value, operator blocks.ComparisonOperator, value2 blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
-	trueBlock, falseBlock := Null(), Null()
-	g.Add(If(resolveValue(value1, g).Op(operator.Value()).Add(resolveValue(value2, g))).Block(trueBlock).Else().Block(falseBlock))
-
-	trueBodyImplementation := &GoBodyImplementation{
-		receiverName: g.receiverName,
-		block:        trueBlock,
-	}
-	falseBodyImplementation := &GoBodyImplementation{
-		receiverName: g.receiverName,
-		block:        falseBlock,
-	}
-
-	return trueBodyImplementation, falseBodyImplementation
-}
-
-func (g *GoBodyImplementation) IfBool(value blocks.Value) blocks.BodyImplementation {
+func (g *GoBodyImplementation) If(value blocks.Value) blocks.BodyImplementation {
 	block := Null()
 	g.Add(If(resolveValue(value, g)).Block(block))
 
@@ -146,7 +130,7 @@ func (g *GoBodyImplementation) IfBool(value blocks.Value) blocks.BodyImplementat
 	}
 }
 
-func (g *GoBodyImplementation) IfElseBool(value blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
+func (g *GoBodyImplementation) IfElse(value blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
 	trueBlock, falseBlock := Null(), Null()
 	g.Add(If(resolveValue(value, g)).Block(trueBlock).Else().Block(falseBlock))
 
@@ -206,7 +190,7 @@ func lines(statements ...Code) Code {
 		return Null()
 	}
 
-	combined := Add(statements[0])
+	combined := Add(statements[0]).Line()
 	for _, statement := range statements[1:] {
 		combined = combined.Line().Add(statement)
 	}
