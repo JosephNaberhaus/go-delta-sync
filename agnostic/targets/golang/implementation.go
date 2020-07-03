@@ -67,6 +67,10 @@ func (g *GoBodyImplementation) Assign(assignee, assigned blocks.Value) {
 	g.Add(resolveValue(assignee, g).Op("=").Add(resolveValue(assigned, g)))
 }
 
+func (g *GoBodyImplementation) Declare(declared blocks.VariableStruct, value blocks.Value) {
+	g.Add(resolveValue(declared, g).Op(":=").Add(resolveValue(value, g)))
+}
+
 func (g *GoBodyImplementation) ForEach(array blocks.Value, indexName, valueName string) blocks.BodyImplementation {
 	block := Null()
 	g.Add(For(Id(indexName), Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
@@ -83,6 +87,48 @@ func (g *GoBodyImplementation) If(value1 blocks.Value, operator blocks.Compariso
 		receiverName: g.receiverName,
 		block:        block,
 	}
+}
+
+func (g *GoBodyImplementation) IfElse(value1 blocks.Value, operator blocks.ComparisonOperator, value2 blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
+	trueBlock, falseBlock := Null(), Null()
+	g.Add(If(resolveValue(value1, g).Op(operator.Value()).Add(resolveValue(value2, g))).Block(trueBlock).Else().Block(falseBlock))
+
+	trueBodyImplementation := &GoBodyImplementation{
+		receiverName: g.receiverName,
+		block:        trueBlock,
+	}
+	falseBodyImplementation := &GoBodyImplementation{
+		receiverName: g.receiverName,
+		block:        falseBlock,
+	}
+
+	return trueBodyImplementation, falseBodyImplementation
+}
+
+func (g *GoBodyImplementation) IfBool(value blocks.Value) blocks.BodyImplementation {
+	block := Null()
+	g.Add(If(resolveValue(value, g)).Block(block))
+
+	return &GoBodyImplementation{
+		receiverName: g.receiverName,
+		block:        block,
+	}
+}
+
+func (g *GoBodyImplementation) IfElseBool(value blocks.Value) (trueBody, falseBody blocks.BodyImplementation) {
+	trueBlock, falseBlock := Null(), Null()
+	g.Add(If(resolveValue(value, g)).Block(trueBlock).Else().Block(falseBlock))
+
+	trueBodyImplementation := &GoBodyImplementation{
+		receiverName: g.receiverName,
+		block:        trueBlock,
+	}
+	falseBodyImplementation := &GoBodyImplementation{
+		receiverName: g.receiverName,
+		block:        falseBlock,
+	}
+
+	return trueBodyImplementation, falseBodyImplementation
 }
 
 func Implementation(args map[string]string) blocks.Implementation {
