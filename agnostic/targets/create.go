@@ -1,11 +1,12 @@
-package agnostic
+package targets
 
 import (
 	"errors"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets/golang"
 )
 
-func CreateImplementation(name string, args map[string]string) (implementation Implementation, err error) {
+func CreateImplementation(name string, args map[string]string) (implementation agnostic.Implementation, err error) {
 	if name == "go" {
 		return golang.Implementation(args), nil
 	}
