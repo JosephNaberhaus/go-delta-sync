@@ -9,14 +9,14 @@ type Map struct {
 	key, value Any
 }
 
-func NewMapTypeDescription(keyDescription, valueDescription Any) Map {
-	return Map{key: keyDescription, value: valueDescription}
+func NewMap(key, value Any) Map {
+	return Map{key: key, value: value}
 }
 
-func (m Map) KeyDescription() Any {
+func (m Map) Key() Any {
 	return m.key
 }
 
-func (m Map) ValueDescription() Any {
+func (m Map) Value() Any {
 	return m.key
 }
