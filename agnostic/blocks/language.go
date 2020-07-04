@@ -8,8 +8,8 @@ import (
 type ModelName string
 
 type Field struct {
-	Name            string
-	TypeDescription types.Any
+	Name string
+	Type types.Any
 }
 
 // A file in an arbitrary programming language
