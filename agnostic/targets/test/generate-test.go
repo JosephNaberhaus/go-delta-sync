@@ -126,21 +126,87 @@ func GenerateImplementationTest(implementation agnostic.Implementation) {
 	// Create a model to add test methods to
 	implementation.Model(
 		"TestModel",
-		agnostic.Field{Name: "AssignInt", Type: types.BaseInt},
+		agnostic.Field{Name: "TestInt", Type: types.BaseInt},
+		agnostic.Field{Name: "TestInt2", Type: types.BaseInt},
+		agnostic.Field{Name: "TestArray", Type: types.NewArray(types.BaseInt)},
+		agnostic.Field{Name: "TestMap", Type: types.NewMap(types.BaseInt, types.BaseInt)},
 		agnostic.Field{Name: "IfOutput", Type: types.BaseString},
 	)
 
-	// Create test method that assigns the value to TestInteger
+	// Create test method that assigns the value to TestInt
 	parameter := agnostic.Field{Name: "value", Type: types.BaseInt}
 	body := implementation.Method("TestModel", "TestAssign", parameter)
-	body.Assign(value.NewOwnField(value.NewId("AssignInt")), value.NewId("value"))
+	body.Assign(value.NewOwnField(value.NewId("TestInt")), value.NewId("value"))
 
-	// Create a test method that declares a new variable that's the same as the
-	// value and then assigns that to TestInteger
+	// Create a test method that declares a new int with value 42 and assigns
+	// it to TestInt
+	body = implementation.Method("TestModel", "TestDeclare")
+	body.Declare("declared", value.NewInt(42))
+	body.Assign(value.NewOwnField(value.NewId("TestInt")), value.NewId("declared"))
+
+	// Create a test method that declares a new array and assigns it to
+	// TestArray
+	body = implementation.Method("TestModel", "TestDeclareArray")
+	body.DeclareArray("declared", types.BaseInt)
+	body.Assign(value.NewOwnField(value.NewId("TestArray")), value.NewId("declared"))
+
+	// Create a test method that declares a new map and assigns it to TestMap
+	body = implementation.Method("TestModel", "TestDeclareMap")
+	body.DeclareMap("declared", types.BaseInt, types.BaseInt)
+	body.Assign(value.NewOwnField(value.NewId("TestMap")), value.NewId("declared"))
+
+	// Creates a test method that appends the value to TestArray (which must
+	// already be initialised)
 	parameter = agnostic.Field{Name: "value", Type: types.BaseInt}
-	body = implementation.Method("TestModel", "TestDeclare", parameter)
-	body.Declare("declared", value.NewId("value"))
-	body.Assign(value.NewOwnField(value.NewId("AssignInt")), value.NewId("declared"))
+	body = implementation.Method("TestModel", "TestAppendValue", parameter)
+	body.AppendValue(value.NewOwnField(value.NewId("TestArray")), value.NewId("value"))
+
+	// Creates a test method that appends the array of values to TestArray
+	// (which must already be initialised
+	parameter = agnostic.Field{Name: "valueArray", Type: types.NewArray(types.BaseInt)}
+	body = implementation.Method("TestModel", "TestAppendArray", parameter)
+	body.AppendArray(value.NewOwnField(value.NewId("TestArray")), value.NewId("valueArray"))
+
+	// Creates a test method that removes the index from TestArray (which must
+	// already be initialised
+	parameter = agnostic.Field{Name: "index", Type: types.BaseInt}
+	body = implementation.Method("TestModel", "TestRemove", parameter)
+	body.RemoveValue(value.NewOwnField(value.NewId("TestArray")), value.NewId("index"))
+
+	// Creates a test method that puts the  key and value into TestMap (which
+	// must already be initialised
+	parameter1 := agnostic.Field{Name: "key", Type: types.BaseInt}
+	parameter2 := agnostic.Field{Name: "value", Type: types.BaseInt}
+	body = implementation.Method("TestModel", "TestPut", parameter1, parameter2)
+	body.MapPut(value.NewOwnField(value.NewId("TestMap")), value.NewId("key"), value.NewId("value"))
+
+	// Creates a test method that deletes the key from TestMap (which must
+	// already be initialised
+	parameter = agnostic.Field{Name: "key", Type: types.BaseInt}
+	body = implementation.Method("TestModel", "TestDelete", parameter)
+	body.MapDelete(value.NewOwnField(value.NewId("TestMap")), value.NewId("key"))
+
+	// Creates a method that iterates the array and assigns the last value to
+	// TestInt and the last index to TestInt2
+	parameter = agnostic.Field{Name: "valueArray", Type: types.NewArray(types.BaseInt)}
+	body = implementation.Method("TestModel", "TestForEach", parameter)
+	forEachBody := body.ForEach(value.NewId("valueArray"), "index", "value")
+	forEachBody.Assign(value.NewOwnField(value.NewId("TestInt")), value.NewId("value"))
+	forEachBody.Assign(value.NewOwnField(value.NewId("TestInt2")), value.NewId("index"))
+
+	// Creates a method that iterates the array and assigns that last value to
+	// TestInt
+	parameter = agnostic.Field{Name: "valueArray", Type: types.NewArray(types.BaseInt)}
+	body = implementation.Method("TestModel", "TestForEachNoIndex", parameter)
+	forEachBody = body.ForEach(value.NewId("valueArray"), "", "value")
+	forEachBody.Assign(value.NewOwnField(value.NewId("TestInt")), value.NewId("value"))
+
+	// Creates a method that iterates the array and assigns that last index to
+	// TestInt
+	parameter = agnostic.Field{Name: "valueArray", Type: types.NewArray(types.BaseInt)}
+	body = implementation.Method("TestModel", "TestForEachNoValue", parameter)
+	forEachBody = body.ForEach(value.NewId("valueArray"), "index", "")
+	forEachBody.Assign(value.NewOwnField(value.NewId("TestInt")), value.NewId("index"))
 
 	// Create a test method that sets IfOutput to "true" if the value is true
 	parameter = agnostic.Field{Name: "value", Type: types.BaseBool}
