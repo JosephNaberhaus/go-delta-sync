@@ -65,6 +65,23 @@ func (g *GoImplementation) Method(modelName, methodName string, parameters ...ag
 	}
 }
 
+func (g *GoImplementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) agnostic.BodyImplementation {
+	receiverName := strings.ToLower(modelName[:1])
+	block := Null()
+
+	parametersCode := make([]Code, 0)
+	for _, param := range parameters {
+		parametersCode = append(parametersCode, Id(param.Name).Add(resolveType(param.Type)))
+	}
+
+	g.Add(Func().Params(Id(receiverName).Op("*").Id(modelName)).Id(methodName).Params(parametersCode...).Add(resolveType(returnType)).Block(block))
+
+	return &GoBodyImplementation{
+		receiverName: receiverName,
+		block:        block,
+	}
+}
+
 func (g *GoBodyImplementation) Assign(assignee, assigned value.Any) {
 	g.Add(resolveValue(assignee, g).Op("=").Add(resolveValue(assigned, g)))
 }
@@ -145,6 +162,10 @@ func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody agno
 	}
 
 	return trueBodyImplementation, falseBodyImplementation
+}
+
+func (g *GoBodyImplementation) Return(value value.Any) {
+	g.Add(Return(resolveValue(value, g)))
 }
 
 func Implementation(args map[string]string) agnostic.Implementation {
