@@ -92,7 +92,7 @@ func (g *GoBodyImplementation) AppendArray(array, valueArray value.Any) {
 func (g *GoBodyImplementation) RemoveValue(array, index value.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(
 		resolveValue(array, g).Index(Op(":").Add(resolveValue(index, g))),
-		resolveValue(array, g).Index(resolveValue(index, g).Op("+").Lit(1).Op(":")),
+		resolveValue(array, g).Index(resolveValue(index, g).Op("+").Lit(1).Op(":")).Op("..."),
 	))
 }
 
@@ -110,11 +110,11 @@ func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName str
 	}
 
 	if valueName == "" {
-		indexName = "_"
+		valueName = "_"
 	}
 
 	block := Null()
-	g.Add(For(Id(indexName), Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
+	g.Add(For(Id(indexName).Op(",").Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
 	return &GoBodyImplementation{
 		receiverName: g.receiverName,
 		block:        block,
