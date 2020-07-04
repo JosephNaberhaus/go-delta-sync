@@ -24,9 +24,15 @@ type Implementation interface {
 	Model(name ModelName, fields ...Field)
 
 	// Create a new method. A method is simply a function that runs under the
-	// context of a model and has direct access to it's contents
+	// context of a model and has direct access to its contents
 	// Go Code: func (<first character of modelName> *<modelName>) <methodName>(<parameters>) { <body> }
 	Method(modelName, methodName string, parameters ...Field) BodyImplementation
+
+	// Create a new method that returns a single value. A method is simply a
+	// function that runs under the context of a model and has direct access to
+	// its contents
+	// Go Code: func (<first character of modelName> *<modelName>) <methodName>(<parameters>) <returnType> { <body> }
+	ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...Field) BodyImplementation
 }
 
 // An ordered set of logic that runs inside of a method.
@@ -83,4 +89,7 @@ type BodyImplementation interface {
 	// Execute the true body if the value is true and the false body otherwise
 	// Go Code: `if <value> { <true body> } else { <false body> }
 	IfElse(value value.Any) (TrueBody, FalseBody BodyImplementation)
+
+	// Returns a single value from the method
+	Return(value value.Any)
 }
