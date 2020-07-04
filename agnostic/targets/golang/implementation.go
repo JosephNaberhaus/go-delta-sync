@@ -5,7 +5,7 @@ package golang
 import (
 	"errors"
 	"fmt"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 	. "github.com/dave/jennifer/jen"
@@ -39,7 +39,7 @@ func (g *GoImplementation) Write(fileName string) {
 	}
 }
 
-func (g *GoImplementation) Model(modelName blocks.ModelName, fields ...blocks.Field) {
+func (g *GoImplementation) Model(modelName agnostic.ModelName, fields ...agnostic.Field) {
 	modelStructFields := make([]Code, 0)
 	for _, field := range fields {
 		modelStructFields = append(modelStructFields, Id(field.Name).Add(resolveType(field.Type)))
@@ -48,7 +48,7 @@ func (g *GoImplementation) Model(modelName blocks.ModelName, fields ...blocks.Fi
 	g.Add(Type().Id(string(modelName)).Struct(modelStructFields...))
 }
 
-func (g *GoImplementation) Method(modelName, methodName string, parameters ...blocks.Field) blocks.BodyImplementation {
+func (g *GoImplementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	receiverName := strings.ToLower(modelName[:1])
 	block := Null()
 
@@ -104,7 +104,7 @@ func (g *GoBodyImplementation) MapDelete(mapValue, key value.Any) {
 	g.Add(Delete(resolveValue(mapValue, g), resolveValue(key, g)))
 }
 
-func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName string) blocks.BodyImplementation {
+func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
 	if indexName == "" {
 		indexName = "_"
 	}
@@ -121,7 +121,7 @@ func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName str
 	}
 }
 
-func (g *GoBodyImplementation) If(value value.Any) blocks.BodyImplementation {
+func (g *GoBodyImplementation) If(value value.Any) agnostic.BodyImplementation {
 	block := Null()
 	g.Add(If(resolveValue(value, g)).Block(block))
 
@@ -131,7 +131,7 @@ func (g *GoBodyImplementation) If(value value.Any) blocks.BodyImplementation {
 	}
 }
 
-func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody blocks.BodyImplementation) {
+func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody agnostic.BodyImplementation) {
 	trueBlock, falseBlock := Null(), Null()
 	g.Add(If(resolveValue(value, g)).Block(trueBlock).Else().Block(falseBlock))
 
@@ -147,7 +147,7 @@ func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody bloc
 	return trueBodyImplementation, falseBodyImplementation
 }
 
-func Implementation(args map[string]string) blocks.Implementation {
+func Implementation(args map[string]string) agnostic.Implementation {
 	packageName, ok := args["package"]
 	if !ok {
 		panic(errors.New("no package name supplied"))

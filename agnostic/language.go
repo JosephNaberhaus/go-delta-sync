@@ -1,4 +1,4 @@
-package blocks
+package agnostic
 
 import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
