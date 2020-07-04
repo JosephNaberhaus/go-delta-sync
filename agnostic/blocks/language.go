@@ -9,7 +9,7 @@ type ModelName string
 
 type Field struct {
 	Name            string
-	TypeDescription types.TypeDescription
+	TypeDescription types.Any
 }
 
 // A file in an arbitrary programming language
@@ -39,10 +39,10 @@ type BodyImplementation interface {
 	Declare(name string, value value.Any)
 	// Declares a new array variable containing value of the given type
 	// Go Code: `<name> := make(<arrayType>[]>, 0)
-	DeclareArray(name string, arrayType types.TypeDescription)
+	DeclareArray(name string, arrayType types.Any)
 	// Declares a new map variable
 	// Go Code: `<name> := make(map[<keyType>]<valueType>)
-	DeclareMap(name string, keyType, valueType types.TypeDescription)
+	DeclareMap(name string, keyType, valueType types.Any)
 
 	// Appends a value to the end of an array and ensures that the array value
 	// points to the result. This comes with no guarantees that a different
