@@ -42,7 +42,7 @@ func (g *GoImplementation) Write(fileName string) {
 func (g *GoImplementation) Model(modelName blocks.ModelName, fields ...blocks.Field) {
 	modelStructFields := make([]Code, 0)
 	for _, field := range fields {
-		modelStructFields = append(modelStructFields, Id(field.Name).Id(field.TypeDescription.Value()))
+		modelStructFields = append(modelStructFields, Id(field.Name).Add(resolveType(field.Type)))
 	}
 
 	g.Add(Type().Id(string(modelName)).Struct(modelStructFields...))
@@ -54,7 +54,7 @@ func (g *GoImplementation) Method(modelName, methodName string, parameters ...bl
 
 	parametersCode := make([]Code, 0)
 	for _, param := range parameters {
-		parametersCode = append(parametersCode, Id(param.Name).Id(param.TypeDescription.Value()))
+		parametersCode = append(parametersCode, Id(param.Name).Add(resolveType(param.Type)))
 	}
 
 	g.Add(Func().Params(Id(receiverName).Op("*").Id(modelName)).Id(methodName).Params(parametersCode...).Block(block))
@@ -73,12 +73,12 @@ func (g *GoBodyImplementation) Declare(name string, value value.Any) {
 	g.Add(Id(name).Op(":=").Add(resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) DeclareArray(name string, arrayType types.TypeDescription) {
-	g.Add(Id(name).Op(":=").Make(Index().Id(arrayType.Value()), Lit(0)))
+func (g *GoBodyImplementation) DeclareArray(name string, arrayType types.Any) {
+	g.Add(Id(name).Op(":=").Make(Index().Add(resolveType(arrayType)), Lit(0)))
 }
 
-func (g *GoBodyImplementation) DeclareMap(name string, keyType, valueType types.TypeDescription) {
-	g.Add(Id(name).Op(":=").Make(Map(Id(keyType.Value())).Id(valueType.Value())))
+func (g *GoBodyImplementation) DeclareMap(name string, keyType, valueType types.Any) {
+	g.Add(Id(name).Op(":=").Make(Map(Add(resolveType(keyType))).Add(resolveType(valueType))))
 }
 
 func (g *GoBodyImplementation) AppendValue(array, value value.Any) {
@@ -159,9 +159,47 @@ func Implementation(args map[string]string) blocks.Implementation {
 	}
 }
 
+func resolveType(any types.Any) *Statement {
+	switch t := any.(type) {
+	case types.Base:
+		return resolveBaseType(t)
+	case types.Model:
+		return Id(t.ModelName())
+	case types.Array:
+		return Index().Add(resolveType(t.Element()))
+	case types.Map:
+		return Map(resolveType(t.Key())).Add(resolveType(t.Value()))
+	case types.Pointer:
+		return Op("*").Add(resolveType(t.Value()))
+	default:
+		panic(errors.New(fmt.Sprintf("unkown type %T", t)))
+	}
+}
+
+func resolveBaseType(base types.Base) *Statement {
+	switch base {
+	case types.BaseBool:
+		return Bool()
+	case types.BaseInt:
+		return Int()
+	case types.BaseInt32:
+		return Int32()
+	case types.BaseInt64:
+		return Int64()
+	case types.BaseFloat32:
+		return Float32()
+	case types.BaseFloat64:
+		return Float64()
+	case types.BaseString:
+		return String()
+	default:
+		panic(errors.New("unknown base type " + string(base)))
+	}
+}
+
 // Convert a value interface into its representation into Go code form
-func resolveValue(value value.Any, context *GoBodyImplementation) *Statement {
-	switch v := value.(type) {
+func resolveValue(any value.Any, context *GoBodyImplementation) *Statement {
+	switch v := any.(type) {
 	case value.Null:
 		return Nil()
 	case value.String:
@@ -183,7 +221,7 @@ func resolveValue(value value.Any, context *GoBodyImplementation) *Statement {
 	case value.Combined:
 		return resolveValue(v.Left(), context).Op(v.Operator().Value()).Add(resolveValue(v.Right(), context))
 	default:
-		panic(errors.New("unknown value type " + fmt.Sprintf("%T", v)))
+		panic(errors.New(fmt.Sprintf("uknown type %T", v)))
 	}
 }
 
