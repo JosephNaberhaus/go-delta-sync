@@ -3,9 +3,11 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
-	. "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks"
-	. "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/value"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets"
 	"strings"
 )
 
@@ -50,7 +52,7 @@ func main() {
 		panic(errors.New("implementation name/path is required"))
 	}
 
-	implementation, err := agnostic.CreateImplementation(implementationName, implementationArgs)
+	implementation, err := targets.CreateImplementation(implementationName, implementationArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -59,29 +61,97 @@ func main() {
 	implementation.Write("agnostic-test")
 }
 
-func GenerateImplementationTest(implementation Implementation) {
-	implementation.Model("TestEmptyModel")
+func GenerateImplementationTest(implementation agnostic.Implementation) {
+	implementation.Model("EmptyModel")
+
+	// Create a model containing one of each base type
+	baseTypeModelFields := make([]agnostic.Field, 0)
+	for i := types.Base(0); i < types.NumberBaseTypes; i++ {
+		newField := agnostic.Field{
+			Name: fmt.Sprintf("Field%d", i),
+			Type: i,
+		}
+		baseTypeModelFields = append(baseTypeModelFields, newField)
+	}
+
+	implementation.Model("BaseTypeModel", baseTypeModelFields...)
+
+	// Create a model containing an array of each base type
+	arrayTypeModelFields := make([]agnostic.Field, 0)
+	for i := types.Base(0); i < types.NumberBaseTypes; i++ {
+		newField := agnostic.Field{
+			Name: fmt.Sprintf("ArrrayField%d", i),
+			Type: types.NewArray(i),
+		}
+		arrayTypeModelFields = append(arrayTypeModelFields, newField)
+	}
+
+	implementation.Model("ArrayTypeModel", arrayTypeModelFields...)
+
+	// Create a model containing a pointer of each base type
+	pointerTypeModelFields := make([]agnostic.Field, 0)
+	for i := types.Base(0); i < types.NumberBaseTypes; i++ {
+		newField := agnostic.Field{
+			Name: fmt.Sprintf("PointerField%d", i),
+			Type: types.NewPointer(i),
+		}
+		pointerTypeModelFields = append(pointerTypeModelFields, newField)
+	}
+
+	implementation.Model("PointerTypeModel", pointerTypeModelFields...)
+
+	// Create a model containing a map from each base type to every other base type
+	mapTypeModelFields := make([]agnostic.Field, 0)
+	for i := types.Base(0); i < types.NumberBaseTypes; i++ {
+		for j := types.Base(0); j < types.NumberBaseTypes; j++ {
+			newField := agnostic.Field{
+				Name: fmt.Sprintf("MapField%dTo%d", i, j),
+				Type: types.NewMap(i, j),
+			}
+			mapTypeModelFields = append(mapTypeModelFields, newField)
+		}
+	}
+
+	implementation.Model("MapTypeModel", mapTypeModelFields...)
+
+	// Create a model with as-is, pointer, array, and map variants of the empty model
 	implementation.Model(
-		"TestModel",
-		Field{Name: "IntField", TypeDescription: NewBaseTypeDescription(BaseTypeInt)},
-		Field{Name: "Int8Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt8)},
-		Field{Name: "Int16Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt16)},
-		Field{Name: "Int32Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt32)},
-		Field{Name: "Int64Field", TypeDescription: NewBaseTypeDescription(BaseTypeInt64)},
-		Field{Name: "UIntField", TypeDescription: NewBaseTypeDescription(BaseTypeUInt)},
-		Field{Name: "UInt8Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt8)},
-		Field{Name: "UInt16Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt16)},
-		Field{Name: "UInt32Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt32)},
-		Field{Name: "UInt64Field", TypeDescription: NewBaseTypeDescription(BaseTypeUInt64)},
-		Field{Name: "UIntPtrField", TypeDescription: NewBaseTypeDescription(BaseTypeUIntPtr)},
-		Field{Name: "ByteField", TypeDescription: NewBaseTypeDescription(BaseTypeByte)},
-		Field{Name: "RuneField", TypeDescription: NewBaseTypeDescription(BaseTypeRune)},
-		Field{Name: "Float32Field", TypeDescription: NewBaseTypeDescription(BaseTypeFloat32)},
-		Field{Name: "Float64Field", TypeDescription: NewBaseTypeDescription(BaseTypeFloat64)},
-		Field{Name: "Complex64Field", TypeDescription: NewBaseTypeDescription(BaseTypeComplex64)},
-		Field{Name: "Complex128Field", TypeDescription: NewBaseTypeDescription(BaseTypeComplex128)},
+		"IdTypeModel",
+		agnostic.Field{Name: "IdField", Type: types.NewModel("EmptyModel")},
+		agnostic.Field{Name: "IdPointerField", Type: types.NewPointer(types.NewModel("EmptyModel"))},
+		agnostic.Field{Name: "IdArrayField", Type: types.NewArray(types.NewModel("EmptyModel"))},
+		agnostic.Field{Name: "IdToIdMapField", Type: types.NewMap(types.NewModel("EmptyModel"), types.NewModel("EmptyModel"))},
 	)
 
-	testParameter := Field{Name: "testParameter", TypeDescription: NewBaseTypeDescription(BaseTypeInt)}
-	implementation.Method("TestModel", "TestMethod", testParameter)
+	// Create a model to add test methods to
+	implementation.Model(
+		"TestModel",
+		agnostic.Field{Name: "AssignInt", Type: types.BaseInt},
+		agnostic.Field{Name: "IfOutput", Type: types.BaseString},
+	)
+
+	// Create test method that assigns the value to TestInteger
+	parameter := agnostic.Field{Name: "value", Type: types.BaseInt}
+	body := implementation.Method("TestModel", "TestAssign", parameter)
+	body.Assign(value.NewOwnField(value.NewId("AssignInt")), value.NewId("value"))
+
+	// Create a test method that declares a new variable that's the same as the
+	// value and then assigns that to TestInteger
+	parameter = agnostic.Field{Name: "value", Type: types.BaseInt}
+	body = implementation.Method("TestModel", "TestDeclare", parameter)
+	body.Declare("declared", value.NewId("value"))
+	body.Assign(value.NewOwnField(value.NewId("AssignInt")), value.NewId("declared"))
+
+	// Create a test method that sets IfOutput to "true" if the value is true
+	parameter = agnostic.Field{Name: "value", Type: types.BaseBool}
+	body = implementation.Method("TestModel ", "TestIf", parameter)
+	body.If(value.NewId("value")).Assign(value.NewOwnField(value.NewId("IfOutput")), value.NewString("true"))
+
+	// Create a test method that sets IfOutput to "true" if the value is true
+	// and "false" otherwise
+	parameter = agnostic.Field{Name: "value", Type: types.BaseBool}
+	body = implementation.Method("TestModel", "TestIfElse", parameter)
+	trueBody, falseBody := body.IfElse(value.NewId("value"))
+	trueBody.Assign(value.NewOwnField(value.NewId("IfOutput")), value.NewString("true"))
+	falseBody.Assign(value.NewOwnField(value.NewId("IfOutput")), value.NewString("false"))
 }
