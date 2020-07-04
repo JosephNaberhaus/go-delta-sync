@@ -71,8 +71,8 @@ type BodyImplementation interface {
 	MapDelete(mapValue, key value.Any)
 
 	// Iterates through every value of the given array. Index name and value
-	// are to be variables containing the equivalent of a zero based index and
-	// the value at that index. An empty string for a name will  to indicate to
+	// are to be variables containing the zero based index of the current value
+	// and the current value. An empty string for a name will  to indicate to
 	// the implementation that the value is not used
 	// Go Code: `for <indexName>, <valueName> := range <array> { <body> }
 	ForEach(array value.Any, indexName, valueName string) BodyImplementation
