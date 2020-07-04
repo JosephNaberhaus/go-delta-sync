@@ -1,21 +1,15 @@
 package types
 
-type IdTypeDescription struct {
-	id string
+// Represents the type of another model
+type Model struct {
+	typeType
+	modelName string
 }
 
-func NewIdTypeDescription(id string) IdTypeDescription {
-	return IdTypeDescription{id: id}
+func NewModel(modelName string) Model {
+	return Model{modelName: modelName}
 }
 
-func (i IdTypeDescription) Classification() TypeClassification {
-	return IdClassification
-}
-
-func (i IdTypeDescription) Value() string {
-	return i.id
-}
-
-func (i IdTypeDescription) Id() string {
-	return i.id
+func (m Model) ModelName() string {
+	return m.modelName
 }

@@ -1,25 +1,22 @@
 package types
 
-type MapTypeDescription struct {
-	keyDescription, valueDescription TypeDescription
+// Represents a map from keys to values. A map should be able to map from any
+// key to any value. However, language implementations are allowed to have
+// limitations on when two keys are considered equal. However, the limitation
+// must be mentioned on the implementations readme
+type Map struct {
+	typeType
+	key, value Any
 }
 
-func NewMapTypeDescription(keyDescription, valueDescription TypeDescription) MapTypeDescription {
-	return MapTypeDescription{keyDescription: keyDescription, valueDescription: valueDescription}
+func NewMapTypeDescription(keyDescription, valueDescription Any) Map {
+	return Map{key: keyDescription, value: valueDescription}
 }
 
-func (m MapTypeDescription) Classification() TypeClassification {
-	return MapClassification
+func (m Map) KeyDescription() Any {
+	return m.key
 }
 
-func (m MapTypeDescription) Value() string {
-	return "map[" + m.keyDescription.Value() + "]" + m.valueDescription.Value()
-}
-
-func (m MapTypeDescription) KeyDescription() TypeDescription {
-	return m.keyDescription
-}
-
-func (m MapTypeDescription) ValueDescription() TypeDescription {
-	return m.valueDescription
+func (m Map) ValueDescription() Any {
+	return m.key
 }

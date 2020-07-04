@@ -1,45 +1,24 @@
 package types
 
-// All base types in Go. Most languages, besides Go, will probably support only a subset of these. Languages should be
-// written to panic when that occurs.
-type BaseType int
+// Represents a subset of base types in Go. These include only the types that
+// are likely to be supported in other languages (with Javascript being a
+// priority).
+type Base int
+
+func (b Base) isTypeType() {}
 
 const (
-	BaseTypeInt BaseType = iota
-	BaseTypeInt32
-	BaseTypeInt64
-	BaseTypeFloat32
-	BaseTypeFloat64
-	BaseTypeBool
-	BaseTypeString
+	BaseInt Base = iota
+	BaseInt32
+	BaseInt64
+	BaseFloat32
+	BaseFloat64
+	BaseBool
+	BaseString
+	NumberBaseTypes // IMPORTANT: Keep at end
 )
 
-var BaseTypeToGoValue = map[BaseType]string{
-	BaseTypeInt:     "int",
-	BaseTypeInt32:   "int32",
-	BaseTypeInt64:   "int64",
-	BaseTypeFloat32: "float32",
-	BaseTypeFloat64: "float64",
-	BaseTypeBool:    "bool",
-	BaseTypeString:  "string",
-}
-
-type BaseTypeDescription struct {
-	baseType BaseType
-}
-
-func NewBaseTypeDescription(baseType BaseType) BaseTypeDescription {
-	return BaseTypeDescription{baseType: baseType}
-}
-
-func (b BaseTypeDescription) Classification() TypeClassification {
-	return BaseClassification
-}
-
-func (b BaseTypeDescription) Value() string {
-	return BaseTypeToGoValue[b.baseType]
-}
-
-func (b BaseTypeDescription) BaseType() BaseType {
-	return b.baseType
+// This constructor is only added so that it matches other types
+func NewBase(base Base) Base {
+	return base
 }

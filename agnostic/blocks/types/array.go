@@ -1,21 +1,15 @@
 package types
 
+// Represents an array/slice type
 type Array struct {
-	elementDescription TypeDescription
+	typeType
+	element Any
 }
 
-func NewArrayDescription(elementDescription TypeDescription) ArrayTypeDescription {
-	return ArrayTypeDescription{elementDescription: elementDescription}
+func NewArray(element Any) Array {
+	return Array{element: element}
 }
 
-func (a ArrayTypeDescription) Classification() TypeClassification {
-	return ArrayClassification
-}
-
-func (a ArrayTypeDescription) Value() string {
-	return "[]" + a.elementDescription.Value()
-}
-
-func (a *ArrayTypeDescription) ElementDescription() TypeDescription {
-	return a.elementDescription
+func (a Array) Element() Any {
+	return a.element
 }

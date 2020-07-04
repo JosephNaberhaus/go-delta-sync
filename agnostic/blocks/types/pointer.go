@@ -1,21 +1,16 @@
 package types
 
-type PointerTypeDescription struct {
-	valueTypeDescription TypeDescription // The type description of the value that is pointed to
+// Represents a pointer type. Languages that don't support pointers should
+// implement this type in some way that mimics pointers
+type Pointer struct {
+	typeType
+	value Any // The type of the value that is pointed to
 }
 
-func NewPointerTypeDescription(valueTypeDescription TypeDescription) PointerTypeDescription {
-	return PointerTypeDescription{valueTypeDescription: valueTypeDescription}
+func NewPointer(value Any) Pointer {
+	return Pointer{value: value}
 }
 
-func (p PointerTypeDescription) Classification() TypeClassification {
-	return PointerClassification
-}
-
-func (p PointerTypeDescription) Value() string {
-	return "*" + p.valueTypeDescription.Value()
-}
-
-func (p PointerTypeDescription) ValueTypeDescription() TypeDescription {
-	return p.valueTypeDescription
+func (p Pointer) Value() Any {
+	return p.value
 }
