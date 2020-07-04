@@ -80,7 +80,7 @@ func GenerateImplementationTest(implementation agnostic.Implementation) {
 	arrayTypeModelFields := make([]agnostic.Field, 0)
 	for i := types.Base(0); i < types.NumberBaseTypes; i++ {
 		newField := agnostic.Field{
-			Name: fmt.Sprintf("ArrrayField%d", i),
+			Name: fmt.Sprintf("ArrayField%d", i),
 			Type: types.NewArray(i),
 		}
 		arrayTypeModelFields = append(arrayTypeModelFields, newField)
