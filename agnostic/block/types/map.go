@@ -18,5 +18,5 @@ func (m Map) Key() Any {
 }
 
 func (m Map) Value() Any {
-	return m.key
+	return m.value
 }
