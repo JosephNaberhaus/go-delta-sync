@@ -82,6 +82,15 @@ func GenerateAgnosticTests(implementation agnostic.Implementation) {
 		agnostic.Field{Name: "IfOutput", Type: types.BaseString},
 	)
 
+	for _, suite := range TestSuites {
+		for _, c := range suite {
+			if c.Returns == nil {
+				c.Generator(implementation.Method("TestModel", c.Name, c.Parameters...))
+			} else {
+				c.Generator(implementation.ReturnMethod("TestModel", c.Name, c.Returns, c.Parameters...))
+			}
+		}
+	}
 }
 
 func GenerateImplementationTests(implementation Implementation) {
