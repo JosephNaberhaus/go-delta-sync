@@ -229,15 +229,22 @@ func resolveValue(any value.Any, context *GoBodyImplementation) *Statement {
 		return Lit(v.Value())
 	case value.Float:
 		return Lit(v.Value())
+	case value.Array:
+		elements := make([]Code, 0, len(v.Elements()))
+		for _, element := range v.Elements() {
+			elements = append(elements, resolveValue(element, context))
+		}
+
+		return Index().Add(resolveType(v.ElementType())).Block(elements...)
 	case value.OwnField:
 		return Id(context.receiverName).Op(".").Add(resolveValue(v.Field(), context))
 	case value.Id:
 		return Id(v.Name())
 	case value.ModelField:
 		return Id(v.ModelName()).Op(".").Add(resolveValue(v.Field(), context))
-	case value.Array:
+	case value.ArrayElement:
 		return resolveValue(v.Array(), context).Index(resolveValue(v.Index(), context))
-	case value.Map:
+	case value.MapElement:
 		return resolveValue(v.Map(), context).Index(resolveValue(v.Key(), context))
 	case value.Combined:
 		return resolveValue(v.Left(), context).Op(v.Operator().Value()).Add(resolveValue(v.Right(), context))
