@@ -10,6 +10,7 @@ var ArrayCases = []Case{
 	{
 		Name:        "DeclareArray",
 		Description: "Declares an array and then returns it",
+		Returns:     types.NewArray(types.BaseInt),
 		Generator: func(body agnostic.BodyImplementation) {
 			body.DeclareArray("declared", types.BaseInt)
 			body.Return(value.NewId("declared"))
