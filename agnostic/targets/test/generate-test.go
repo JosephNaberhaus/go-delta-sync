@@ -64,5 +64,5 @@ func main() {
 	}
 
 	generate.GenerateImplementationTests(testImplementation)
-	testImplementation.Write("implementation-test")
+	testImplementation.Write("implementation_test")
 }
