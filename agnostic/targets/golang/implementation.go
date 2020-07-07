@@ -219,7 +219,16 @@ func resolveBaseType(base types.Base) *Statement {
 }
 
 // Convert a value interface into its representation into Go code form
-func resolveValue(any value.Any, context *GoBodyImplementation) *Statement {
+func resolveValue(any value.Any, optionalContext ...*GoBodyImplementation) *Statement {
+	var context *GoBodyImplementation
+	if len(optionalContext) == 0 && any.IsMethodDependent() {
+		panic(errors.New("no context provided for method dependent value"))
+	} else if len(optionalContext) == 1 {
+		context = optionalContext[0]
+	} else {
+		panic(errors.New("multiple body contexts provided when only 0 or 1 is allowed"))
+	}
+
 	switch v := any.(type) {
 	case value.Null:
 		return Nil()
