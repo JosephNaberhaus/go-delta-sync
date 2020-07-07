@@ -15,6 +15,10 @@ func (a ArrayElement) Index() Any {
 	return a.index
 }
 
+func (a ArrayElement) IsMethodDependent() bool {
+	return a.array.IsMethodDependent() || a.index.IsMethodDependent()
+}
+
 func NewArrayElement(array, index Any) ArrayElement {
 	return ArrayElement{
 		array: array,

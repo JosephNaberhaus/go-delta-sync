@@ -16,6 +16,10 @@ func (m ModelField) Field() Any {
 	return m.field
 }
 
+func (m ModelField) IsMethodDependent() bool {
+	return m.field.IsMethodDependent()
+}
+
 func NewModelField(modelName string, field Any) ModelField {
 	return ModelField{
 		modelName: modelName,

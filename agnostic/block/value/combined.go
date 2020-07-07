@@ -18,6 +18,10 @@ func (c Combined) Operator() Operator {
 	return c.operator
 }
 
+func (c Combined) IsMethodDependent() bool {
+	return c.left.IsMethodDependent() || c.right.IsMethodDependent()
+}
+
 func NewCombined(left Any, operator Operator, right Any) Combined {
 	return Combined{
 		left:     left,

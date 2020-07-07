@@ -5,6 +5,7 @@ import "github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
 // Refers to a literal null/nil/empty value
 type Null struct {
 	valueType
+	methodIndependent
 }
 
 func NewNull() Null {
@@ -14,6 +15,7 @@ func NewNull() Null {
 // Refers to a literal string value
 type String struct {
 	valueType
+	methodIndependent
 	value string
 }
 
@@ -28,6 +30,7 @@ func NewString(value string) String {
 // Refers a literal int value
 type Int struct {
 	valueType
+	methodIndependent
 	value int
 }
 
@@ -42,6 +45,7 @@ func NewInt(value int) Int {
 // Refers to a literal floating point value
 type Float struct {
 	valueType
+	methodIndependent
 	value float64
 }
 
@@ -56,6 +60,7 @@ func NewFloat(value float64) Float {
 // Refers to a literal boolean value
 type Bool struct {
 	valueType
+	methodIndependent
 	value bool
 }
 
@@ -80,6 +85,16 @@ func (a Array) ElementType() types.Any {
 
 func (a Array) Elements() []Any {
 	return a.elements
+}
+
+func (a Array) IsMethodDependent() bool {
+	for _, element := range a.elements {
+		if element.IsMethodDependent() {
+			return true
+		}
+	}
+
+	return false
 }
 
 func NewArray(elementType types.Any, element ...Any) Array {

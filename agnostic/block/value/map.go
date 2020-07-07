@@ -17,6 +17,10 @@ func (m MapElement) Key() Any {
 	return m.key
 }
 
+func (m MapElement) IsMethodDependent() bool {
+	return m.mapValue.IsMethodDependent() || m.key.IsMethodDependent()
+}
+
 func NewMap(mapValue, key Any) MapElement {
 	return MapElement{
 		mapValue: mapValue,

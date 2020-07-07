@@ -1,12 +1,22 @@
 package value
 
-// Anything that represents a value that exists within the context of a
-// methods body
 type Any interface {
 	isValueType()
+	IsMethodDependent() bool // True if the value has to be in the context of a method
 }
 
-// Embed in any struct to mark it as a type of value
 type valueType struct{}
 
 func (v valueType) isValueType() {}
+
+type methodDependent struct{}
+
+func (m methodDependent) IsMethodDependent() bool {
+	return true
+}
+
+type methodIndependent struct{}
+
+func (m methodIndependent) IsMethodDependent() bool {
+	return false
+}
