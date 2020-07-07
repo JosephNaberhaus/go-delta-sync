@@ -39,7 +39,7 @@ func (g *GoTestImplementation) Test(testCase generate.Case) {
 		// Call the test model method
 		inputs := make([]Code, 0, len(fact.Inputs))
 		for _, input := range fact.Inputs {
-			inputs = append(inputs, Lit(input))
+			inputs = append(inputs, resolveValue(input))
 		}
 		if fact.Output == nil {
 			callTestMethod := Id("model").Dot(testCase.Name).Call(inputs...)
@@ -51,7 +51,7 @@ func (g *GoTestImplementation) Test(testCase generate.Case) {
 
 		// Assert that the output matches the expected value
 		if fact.Output != nil {
-			assertOutput := Id("require").Dot("Equal").Call(Id("t"), Lit(fact.Output), Id("output"))
+			assertOutput := Id("require").Dot("Equal").Call(Id("t"), resolveValue(fact.Output), Id("output"))
 			testBody = append(testBody, assertOutput)
 		}
 
