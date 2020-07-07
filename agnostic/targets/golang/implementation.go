@@ -244,7 +244,7 @@ func resolveValue(any value.Any, optionalContext ...*GoBodyImplementation) *Stat
 			elements = append(elements, resolveValue(element, context))
 		}
 
-		return Index().Add(resolveType(v.ElementType())).Block(elements...)
+		return Index().Add(resolveType(v.ElementType())).Values(elements...)
 	case value.OwnField:
 		return Id(context.receiverName).Op(".").Add(resolveValue(v.Field(), context))
 	case value.Id:
