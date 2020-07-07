@@ -1,5 +1,7 @@
 package value
 
+import "github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
+
 // Refers to a literal null/nil/empty value
 type Null struct {
 	valueType
@@ -63,4 +65,26 @@ func (b Bool) Value() bool {
 
 func NewBool(value bool) Bool {
 	return Bool{value: value}
+}
+
+// Refers to an array literal
+type Array struct {
+	valueType
+	elementType types.Any
+	elements    []Any
+}
+
+func (a Array) ElementType() types.Any {
+	return a.elementType
+}
+
+func (a Array) Elements() []Any {
+	return a.elements
+}
+
+func NewArray(elementType types.Any, element ...Any) Array {
+	return Array{
+		elementType: elementType,
+		elements:    element,
+	}
 }
