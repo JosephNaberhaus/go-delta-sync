@@ -1,13 +1,12 @@
-package suites
+package generate
 
 import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/value"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets/test"
 )
 
-var ArrayCases = []main.Case{
+var ArrayCases = []Case{
 	{
 		Name:        "DeclareArray",
 		Description: "Declares an array and then returns it",
@@ -15,9 +14,9 @@ var ArrayCases = []main.Case{
 			body.DeclareArray("declared", types.BaseInt)
 			body.Return(value.NewId("declared"))
 		},
-		Facts: []main.Fact{
+		Facts: []Fact{
 			{
-				Output: []int{},
+				Output: value.NewArray(types.BaseInt),
 			},
 		},
 	},
@@ -33,20 +32,22 @@ var ArrayCases = []main.Case{
 			body.AppendValue(value.NewId("array"), value.NewId("value"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []main.Fact{
+		Facts: []Fact{
 			{
-				Inputs: []interface{}{
-					[]int{},
-					1,
+				Name: "Empty",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt),
+					value.NewInt(1),
 				},
-				Output: []int{1},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1)),
 			},
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					4,
+				Name: "Populated",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewInt(4),
 				},
-				Output: []int{1, 2, 3, 4},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3), value.NewInt(4)),
 			},
 		},
 	},
@@ -62,27 +63,30 @@ var ArrayCases = []main.Case{
 			body.AppendArray(value.NewId("array"), value.NewId("valueArray"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []main.Fact{
+		Facts: []Fact{
 			{
-				Inputs: []interface{}{
-					[]int{},
-					[]int{1, 2, 3},
+				Name: "ModelEmpty",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt),
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
 				},
-				Output: []int{1, 2, 3},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
 			},
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					[]int{},
+				Name: "ParameterEmpty",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewArray(types.BaseInt),
 				},
-				Output: []int{1, 2, 3},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
 			},
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					[]int{4, 5, 6},
+				Name: "BothPopulated",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewArray(types.BaseInt, value.NewInt(4), value.NewInt(5), value.NewInt(6)),
 				},
-				Output: []int{1, 2, 3, 4, 5, 6},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3), value.NewInt(4), value.NewInt(5), value.NewInt(6)),
 			},
 		},
 	},
@@ -98,27 +102,30 @@ var ArrayCases = []main.Case{
 			body.RemoveValue(value.NewId("array"), value.NewId("index"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []main.Fact{
+		Facts: []Fact{
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					0,
+				Name: "RemoveFirst",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewInt(0),
 				},
-				Output: []int{2, 3},
+				Output: value.NewArray(types.BaseInt, value.NewInt(2), value.NewInt(3)),
 			},
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					1,
+				Name: "RemoveMiddle",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewInt(1),
 				},
-				Output: []int{1, 3},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(3)),
 			},
 			{
-				Inputs: []interface{}{
-					[]int{1, 2, 3},
-					2,
+				Name: "RemoveLast",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2), value.NewInt(3)),
+					value.NewInt(2),
 				},
-				Output: []int{1, 2},
+				Output: value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(2)),
 			},
 		},
 	},
