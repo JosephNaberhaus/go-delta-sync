@@ -1,12 +1,13 @@
-package main
+package suites
 
 import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/value"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets/test"
 )
 
-var ArrayCases = []Case{
+var ArrayCases = []main.Case{
 	{
 		Name:        "DeclareArray",
 		Description: "Declares an array and then returns it",
@@ -14,7 +15,7 @@ var ArrayCases = []Case{
 			body.DeclareArray("declared", types.BaseInt)
 			body.Return(value.NewId("declared"))
 		},
-		Facts: []Fact{
+		Facts: []main.Fact{
 			{
 				Output: []int{},
 			},
@@ -32,7 +33,7 @@ var ArrayCases = []Case{
 			body.AppendValue(value.NewId("array"), value.NewId("value"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []Fact{
+		Facts: []main.Fact{
 			{
 				Inputs: []interface{}{
 					[]int{},
@@ -61,7 +62,7 @@ var ArrayCases = []Case{
 			body.AppendArray(value.NewId("array"), value.NewId("valueArray"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []Fact{
+		Facts: []main.Fact{
 			{
 				Inputs: []interface{}{
 					[]int{},
@@ -97,7 +98,7 @@ var ArrayCases = []Case{
 			body.RemoveValue(value.NewId("array"), value.NewId("index"))
 			body.Return(value.NewId("array"))
 		},
-		Facts: []Fact{
+		Facts: []main.Fact{
 			{
 				Inputs: []interface{}{
 					[]int{1, 2, 3},
