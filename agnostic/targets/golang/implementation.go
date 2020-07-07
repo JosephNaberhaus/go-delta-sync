@@ -225,7 +225,7 @@ func resolveValue(any value.Any, optionalContext ...*GoBodyImplementation) *Stat
 		panic(errors.New("no context provided for method dependent value"))
 	} else if len(optionalContext) == 1 {
 		context = optionalContext[0]
-	} else {
+	} else if len(optionalContext) > 1 {
 		panic(errors.New("multiple body contexts provided when only 0 or 1 is allowed"))
 	}
 
