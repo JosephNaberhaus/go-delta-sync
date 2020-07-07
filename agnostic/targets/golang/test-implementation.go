@@ -51,18 +51,22 @@ func (g *GoTestImplementation) Test(testCase generate.Case) {
 
 		// Assert that the output matches the expected value
 		if fact.Output != nil {
-			assertOutput := Id("require").Dot("Equal").Call(Id("t"), resolveValue(fact.Output), Id("output"))
+			assertOutput := testifyRequire("Equal").Call(Id("t"), resolveValue(fact.Output), Id("output"))
 			testBody = append(testBody, assertOutput)
 		}
 
 		for _, sideEffect := range fact.SideEffects {
-			assertSideEffect := Id("require").Dot("Equal").Call(Id("t"), resolveValue(sideEffect.ExpectedValue), Id("model").Dot(sideEffect.FieldName))
+			assertSideEffect := testifyRequire("Equal").Call(Id("t"), resolveValue(sideEffect.ExpectedValue), Id("model").Dot(sideEffect.FieldName))
 			testBody = append(testBody, assertSideEffect)
 		}
 
 		testName := "Test" + testCase.Name + fact.Name
-		g.Add(Func().Id(testName).Params(Id("t").Op("*").Id("testing").Dot("t")).Block(testBody...))
+		g.Add(Func().Id(testName).Params(Id("t").Op("*").Qual("testing", "T")).Block(testBody...))
 	}
+}
+
+func testifyRequire(assertion string) *Statement {
+	return Qual("github.com/stretchr/testify/require", assertion)
 }
 
 func TestImplementation(args map[string]string) generate.Implementation {
