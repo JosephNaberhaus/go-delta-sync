@@ -7,7 +7,7 @@ import (
 )
 
 // A collection of tests
-type Suite []test
+type Suite []Case
 
 func ComposeSuites(suites ...Suite) Suite {
 	numCases := 0
@@ -31,10 +31,10 @@ func (s Suite) GenerateAgnostic(implementation agnostic.Implementation) {
 	)
 
 	for _, c := range s {
-		if c.returns == nil {
-			c.generator(implementation.Method("TestModel", c.name, c.parameters...))
+		if c.Returns == nil {
+			c.Generator(implementation.Method("TestModel", c.Name, c.Parameters...))
 		} else {
-			c.generator(implementation.ReturnMethod("TestModel", c.name, c.returns, c.parameters...))
+			c.Generator(implementation.ReturnMethod("TestModel", c.Name, c.Returns, c.Parameters...))
 		}
 	}
 }

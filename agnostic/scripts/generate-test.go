@@ -28,7 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	test.GenerateAgnosticTests(implementation)
+	test.AllSuites.GenerateAgnostic(implementation)
 	implementation.Write("agnostic-test")
 
 	testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
@@ -36,6 +36,6 @@ func main() {
 		panic(err)
 	}
 
-	test.GenerateImplementationTests(testImplementation)
+	test.AllSuites.GenerateTests(testImplementation)
 	testImplementation.Write("implementation_test")
 }

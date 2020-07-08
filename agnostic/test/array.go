@@ -6,7 +6,7 @@ import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 )
 
-var ArrayCases = Suite{
+var ArraySuite = Suite{
 	{
 		Name:        "DeclareArray",
 		Description: "Declares an array and then returns it",
