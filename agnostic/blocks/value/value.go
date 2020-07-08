@@ -1,13 +1,13 @@
 package value
 
 type Any interface {
-	isValueType()
+	isValue()
 	IsMethodDependent() bool // True if the value has to be in the context of a method
 }
 
 type isValueType struct{}
 
-func (v isValueType) isValueType() {}
+func (v isValueType) isValue() {}
 
 type isMethodDependent struct{}
 
