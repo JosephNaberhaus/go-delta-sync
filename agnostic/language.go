@@ -90,6 +90,6 @@ type BodyImplementation interface {
 	// Go Code: `if <value> { <true body> } else { <false body> }
 	IfElse(value value.Any) (TrueBody, FalseBody BodyImplementation)
 
-	// Returns a single value from the method
+	// returns a single value from the method
 	Return(value value.Any)
 }

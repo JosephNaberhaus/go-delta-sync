@@ -7,7 +7,48 @@ import (
 )
 
 // A collection of tests
-type Suite = []Case
+type Suite []test
+
+func ComposeSuites(suites ...Suite) Suite {
+	numCases := 0
+	for _, s := range suites {
+		numCases += len(s)
+	}
+
+	composed := make(Suite, numCases)
+	for _, s := range suites {
+		composed = append(composed, s...)
+	}
+
+	return composed
+}
+
+// Generates the agnostic code (methods and models) for all test suites
+func (s Suite) GenerateAgnostic(implementation agnostic.Implementation) {
+	implementation.Model("TestModel",
+		agnostic.Field{Name: "Int", Type: types.BaseInt},
+		agnostic.Field{Name: "IntArray", Type: types.NewArray(types.BaseInt)},
+	)
+
+	for _, c := range s {
+		if c.returns == nil {
+			c.generator(implementation.Method("TestModel", c.name, c.parameters...))
+		} else {
+			c.generator(implementation.ReturnMethod("TestModel", c.name, c.returns, c.parameters...))
+		}
+	}
+}
+
+// Generates the test code (the assertions) for all test suites
+func (s Suite) GenerateTests(implementation Implementation) {
+	for _, c := range s {
+		implementation.Test(c)
+	}
+}
+
+var AllSuites = ComposeSuites(
+	ArraySuite,
+)
 
 // A function that takes the given body implementation and the method that the
 // test will car
