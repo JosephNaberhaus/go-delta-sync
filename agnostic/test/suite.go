@@ -15,7 +15,7 @@ func ComposeSuites(suites ...Suite) Suite {
 		numCases += len(s)
 	}
 
-	composed := make(Suite, numCases)
+	composed := make(Suite, 0, numCases)
 	for _, s := range suites {
 		composed = append(composed, s...)
 	}
