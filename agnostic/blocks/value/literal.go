@@ -1,7 +1,6 @@
 package value
 
 import (
-	"errors"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 )
 
@@ -107,10 +106,29 @@ func NewArray(elementType types.Any, element ...Any) Array {
 	}
 }
 
+type KeyValue struct {
+	key, value Any
+}
+
+func (k KeyValue) Key() Any {
+	return k.key
+}
+
+func (k KeyValue) Value() Any {
+	return k.value
+}
+
+func NewKeyValue(key, value Any) KeyValue {
+	return KeyValue{
+		key:   key,
+		value: value,
+	}
+}
+
 type Map struct {
 	isValueType
 	keyType, valueType types.Any
-	keys, values       []Any
+	elements           []KeyValue
 }
 
 func (m Map) KeyType() types.Any {
@@ -121,23 +139,13 @@ func (m Map) ValueType() types.Any {
 	return m.valueType
 }
 
-func (m Map) Keys() []Any {
-	return m.keys
-}
-
-func (m Map) Values() []Any {
-	return m.values
+func (m Map) Elements() []KeyValue {
+	return m.elements
 }
 
 func (m Map) IsMethodDependent() bool {
-	for _, key := range m.keys {
-		if key.IsMethodDependent() {
-			return true
-		}
-	}
-
-	for _, value := range m.values {
-		if value.IsMethodDependent() {
+	for _, element := range m.elements {
+		if element.Key().IsMethodDependent() || element.Value().IsMethodDependent() {
 			return true
 		}
 	}
@@ -145,15 +153,10 @@ func (m Map) IsMethodDependent() bool {
 	return false
 }
 
-func NewMap(keyType, valueType types.Any, keys, values []Any) Map {
-	if len(keys) != len(values) {
-		panic(errors.New("cannot create map literal with mismatched number of keys and values"))
-	}
-
+func NewMap(keyType, valueType types.Any, elements []KeyValue) Map {
 	return Map{
 		keyType:   keyType,
 		valueType: valueType,
-		keys:      keys,
-		values:    values,
+		elements:  elements,
 	}
 }
