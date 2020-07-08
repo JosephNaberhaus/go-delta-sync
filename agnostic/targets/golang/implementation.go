@@ -245,6 +245,13 @@ func resolveValue(any value.Any, optionalContext ...*GoBodyImplementation) *Stat
 		}
 
 		return Index().Add(resolveType(v.ElementType())).Values(elements...)
+	case value.Map:
+		elements := make([]Code, 0, len(v.Keys()))
+		for i, key := range v.Keys() {
+			elements = append(elements, resolveValue(key).Op(":").Add(resolveValue(v.Values()[i])))
+		}
+
+		return Map(resolveType(v.KeyType()).Add(resolveType(v.ValueType())).Values(elements...))
 	case value.OwnField:
 		return Id(context.receiverName).Op(".").Add(resolveValue(v.Field(), context))
 	case value.Id:
