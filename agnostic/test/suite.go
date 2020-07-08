@@ -48,6 +48,7 @@ func (s Suite) GenerateTests(implementation Implementation) {
 
 var AllSuites = ComposeSuites(
 	ArraySuite,
+	MapSuite,
 )
 
 // A function that takes the given body implementation and the method that the
