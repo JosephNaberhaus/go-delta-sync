@@ -1,9 +1,9 @@
-package generate
+package test
 
 import (
 	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 )
 
 var TestSuites [][]Case = [][]Case{

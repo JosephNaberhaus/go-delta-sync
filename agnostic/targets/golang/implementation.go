@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/value"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 	. "github.com/dave/jennifer/jen"
 	"strings"
 )

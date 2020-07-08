@@ -1,6 +1,6 @@
 package value
 
-import "github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
+import "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 
 // Refers to a literal null/nil/empty value
 type Null struct {

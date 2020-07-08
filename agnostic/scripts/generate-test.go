@@ -4,7 +4,7 @@ import (
 	"errors"
 	"flag"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets/test/generate"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/test"
 	"strings"
 )
 
@@ -55,7 +55,7 @@ func main() {
 		panic(err)
 	}
 
-	generate.GenerateAgnosticTests(implementation)
+	test.GenerateAgnosticTests(implementation)
 	implementation.Write("agnostic-test")
 
 	testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
@@ -63,6 +63,6 @@ func main() {
 		panic(err)
 	}
 
-	generate.GenerateImplementationTests(testImplementation)
+	test.GenerateImplementationTests(testImplementation)
 	testImplementation.Write("implementation_test")
 }

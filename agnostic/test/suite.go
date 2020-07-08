@@ -1,14 +1,14 @@
-package generate
+package test
 
 import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/types"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/block/value"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 )
 
-// A function that takes the given body implementation and creates a test case
-// inside of it
-type TestBodyFunc func(body agnostic.BodyImplementation)
+// A function that takes the given body implementation and the method that the
+// test will car
+type GenerateBodyFunc func(body agnostic.BodyImplementation)
 
 // A method should be created
 type Case struct {
@@ -16,7 +16,7 @@ type Case struct {
 	Description string           // Describes what the test case is for
 	Parameters  []agnostic.Field // Parameters that the generated test method will take in
 	Returns     types.Any        // The return type of the method or nil if it returns nothing
-	Generator   TestBodyFunc     // Function that generates the test method
+	Generator   GenerateBodyFunc // Function that generates the method that the test will target
 	Facts       []Fact           // Facts about the Test
 }
 

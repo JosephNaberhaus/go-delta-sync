@@ -2,7 +2,7 @@ package golang
 
 import (
 	"errors"
-	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets/test/generate"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/test"
 	. "github.com/dave/jennifer/jen"
 )
 
@@ -28,7 +28,7 @@ func (g *GoTestImplementation) Write(fileName string) {
 	}
 }
 
-func (g *GoTestImplementation) Test(testCase generate.Case) {
+func (g *GoTestImplementation) Test(testCase test.Case) {
 	for _, fact := range testCase.Facts {
 		testBody := make([]Code, 0)
 
@@ -69,7 +69,7 @@ func testifyRequire(assertion string) *Statement {
 	return Qual("github.com/stretchr/testify/require", assertion)
 }
 
-func TestImplementation(args map[string]string) generate.Implementation {
+func TestImplementation(args map[string]string) test.Implementation {
 	packageName, ok := args["package"]
 	if !ok {
 		panic(errors.New("no package name supplied"))
