@@ -6,6 +6,9 @@ import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 )
 
+// A collection of tests
+type Suite = []Case
+
 // A function that takes the given body implementation and the method that the
 // test will car
 type GenerateBodyFunc func(body agnostic.BodyImplementation)

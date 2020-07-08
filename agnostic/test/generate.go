@@ -6,7 +6,7 @@ import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 )
 
-var TestSuites [][]Case = [][]Case{
+var Suites = []Suite{
 	ArrayCases,
 }
 
@@ -82,7 +82,7 @@ func GenerateAgnosticTests(implementation agnostic.Implementation) {
 		agnostic.Field{Name: "IfOutput", Type: types.BaseString},
 	)
 
-	for _, suite := range TestSuites {
+	for _, suite := range Suites {
 		for _, c := range suite {
 			if c.Returns == nil {
 				c.Generator(implementation.Method("TestModel", c.Name, c.Parameters...))
@@ -94,7 +94,7 @@ func GenerateAgnosticTests(implementation agnostic.Implementation) {
 }
 
 func GenerateImplementationTests(implementation Implementation) {
-	for _, suite := range TestSuites {
+	for _, suite := range Suites {
 		for _, c := range suite {
 			implementation.Test(c)
 		}
