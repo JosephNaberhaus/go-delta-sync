@@ -3,46 +3,19 @@ package main
 import (
 	"errors"
 	"flag"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/scripts/input"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/test"
-	"strings"
 )
 
-// A command line flag that allows an arbitrary number of key/value pairs
-type FlagMap map[string]string
-
-func (i FlagMap) Set(value string) error {
-	if len(value) == 0 {
-		return nil
-	}
-
-	split := strings.Split(value, ":")
-	if len(split) != 2 {
-		return errors.New("map flag must be in form <key>:<value>")
-	}
-
-	i[split[0]] = split[1]
-	return nil
-}
-
-func (i FlagMap) String() string {
-	var sb strings.Builder
-	for key, value := range i {
-		sb.WriteString(key)
-		sb.WriteString(":")
-		sb.WriteString(value)
-		sb.WriteString(" ")
-	}
-
-	return sb.String()
-}
-
+// Script that takes builds both a test output file using the specified
+// implementation and a file that tests the functionality of that file
 func main() {
 	var implementationName string
-	var implementationArgs = make(FlagMap)
+	var implementationArgs = make(input.Map)
 
 	flag.StringVar(&implementationName, "impl", "", "language implementation name/path to use")
-	flag.Var(&implementationArgs, "implArg", "arguments to pass into implementation constructor")
+	flag.Var(&implementationArgs, "implArg", "'key:value' pairs to pass as arguments to the implementation")
 
 	flag.Parse()
 
