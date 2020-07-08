@@ -153,7 +153,7 @@ func (m Map) IsMethodDependent() bool {
 	return false
 }
 
-func NewMap(keyType, valueType types.Any, elements []KeyValue) Map {
+func NewMap(keyType, valueType types.Any, elements ...KeyValue) Map {
 	return Map{
 		keyType:   keyType,
 		valueType: valueType,
