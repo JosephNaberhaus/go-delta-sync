@@ -1,4 +1,4 @@
-//go:generate go run ../test/generate-test.go --impl go --implArg package:golang
+//go:generate go run ../../scripts/generate-test.go --impl go --implArg package:golang
 
 package golang
 
