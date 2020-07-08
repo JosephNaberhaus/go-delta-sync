@@ -2,8 +2,8 @@ package value
 
 // A value within a name/id/variable
 type Id struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 	name string
 }
 

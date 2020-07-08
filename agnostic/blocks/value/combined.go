@@ -1,7 +1,7 @@
 package value
 
 type Combined struct {
-	valueType
+	isValueType
 	left, right Any
 	operator    Operator
 }

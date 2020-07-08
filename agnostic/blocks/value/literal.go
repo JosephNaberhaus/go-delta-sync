@@ -1,11 +1,14 @@
 package value
 
-import "github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+import (
+	"errors"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
+)
 
 // Refers to a literal null/nil/empty value
 type Null struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 }
 
 func NewNull() Null {
@@ -14,8 +17,8 @@ func NewNull() Null {
 
 // Refers to a literal string value
 type String struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 	value string
 }
 
@@ -29,8 +32,8 @@ func NewString(value string) String {
 
 // Refers a literal int value
 type Int struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 	value int
 }
 
@@ -44,8 +47,8 @@ func NewInt(value int) Int {
 
 // Refers to a literal floating point value
 type Float struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 	value float64
 }
 
@@ -59,8 +62,8 @@ func NewFloat(value float64) Float {
 
 // Refers to a literal boolean value
 type Bool struct {
-	valueType
-	methodIndependent
+	isValueType
+	isMethodIndependent
 	value bool
 }
 
@@ -74,7 +77,7 @@ func NewBool(value bool) Bool {
 
 // Refers to an array literal
 type Array struct {
-	valueType
+	isValueType
 	elementType types.Any
 	elements    []Any
 }
@@ -101,5 +104,56 @@ func NewArray(elementType types.Any, element ...Any) Array {
 	return Array{
 		elementType: elementType,
 		elements:    element,
+	}
+}
+
+type Map struct {
+	isValueType
+	keyType, valueType types.Any
+	keys, values       []Any
+}
+
+func (m Map) KeyType() types.Any {
+	return m.keyType
+}
+
+func (m Map) ValueType() types.Any {
+	return m.valueType
+}
+
+func (m Map) Keys() []Any {
+	return m.keys
+}
+
+func (m Map) Values() []Any {
+	return m.values
+}
+
+func (m Map) IsMethodDependent() bool {
+	for _, key := range m.keys {
+		if key.IsMethodDependent() {
+			return true
+		}
+	}
+
+	for _, value := range m.values {
+		if value.IsMethodDependent() {
+			return true
+		}
+	}
+
+	return false
+}
+
+func NewMap(keyType, valueType types.Any, keys, values []Any) Map {
+	if len(keys) != len(values) {
+		panic(errors.New("cannot create map literal with mismatched number of keys and values"))
+	}
+
+	return Map{
+		keyType:   keyType,
+		valueType: valueType,
+		keys:      keys,
+		values:    values,
 	}
 }

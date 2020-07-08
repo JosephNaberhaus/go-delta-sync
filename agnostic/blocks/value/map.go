@@ -2,7 +2,7 @@ package value
 
 // Refers to an element inside of a map
 type MapElement struct {
-	valueType
+	isValueType
 	mapValue Any
 	key      Any
 }
@@ -21,7 +21,7 @@ func (m MapElement) IsMethodDependent() bool {
 	return m.mapValue.IsMethodDependent() || m.key.IsMethodDependent()
 }
 
-func NewMap(mapValue, key Any) MapElement {
+func NewMapElement(mapValue, key Any) MapElement {
 	return MapElement{
 		mapValue: mapValue,
 		key:      key,

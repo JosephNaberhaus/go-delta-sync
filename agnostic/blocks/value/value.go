@@ -5,18 +5,18 @@ type Any interface {
 	IsMethodDependent() bool // True if the value has to be in the context of a method
 }
 
-type valueType struct{}
+type isValueType struct{}
 
-func (v valueType) isValueType() {}
+func (v isValueType) isValueType() {}
 
-type methodDependent struct{}
+type isMethodDependent struct{}
 
-func (m methodDependent) IsMethodDependent() bool {
+func (m isMethodDependent) IsMethodDependent() bool {
 	return true
 }
 
-type methodIndependent struct{}
+type isMethodIndependent struct{}
 
-func (m methodIndependent) IsMethodDependent() bool {
+func (m isMethodIndependent) IsMethodDependent() bool {
 	return false
 }
