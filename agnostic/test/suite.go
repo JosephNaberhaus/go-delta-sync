@@ -68,6 +68,7 @@ func (s Suite) GetModelFields() []agnostic.Field {
 var AllSuites = ComposeSuites(
 	ArraySuite,
 	MapSuite,
+	ForSuite,
 )
 
 // A function that takes the given body implementation and the method that the
