@@ -25,13 +25,13 @@ var ArraySuite = Suite{
 		Name:        "AppendValue",
 		Description: "Appends a value to an array and returns the result",
 		Parameters: []agnostic.Field{
-			{Name: "array", Type: types.NewArray(types.BaseInt)},
+			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "value", Type: types.BaseInt},
 		},
 		Returns: types.NewArray(types.BaseInt),
 		Generator: func(body agnostic.BodyImplementation) {
-			body.AppendValue(value.NewId("array"), value.NewId("value"))
-			body.Return(value.NewId("array"))
+			body.AppendValue(value.NewId("inputArray"), value.NewId("value"))
+			body.Return(value.NewId("inputArray"))
 		},
 		Facts: []Fact{
 			{
@@ -56,13 +56,13 @@ var ArraySuite = Suite{
 		Name:        "AppendArray",
 		Description: "Appends a value to an array and returns the result",
 		Parameters: []agnostic.Field{
-			{Name: "array", Type: types.NewArray(types.BaseInt)},
+			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "valueArray", Type: types.NewArray(types.BaseInt)},
 		},
 		Returns: types.NewArray(types.BaseInt),
 		Generator: func(body agnostic.BodyImplementation) {
-			body.AppendArray(value.NewId("array"), value.NewId("valueArray"))
-			body.Return(value.NewId("array"))
+			body.AppendArray(value.NewId("inputArray"), value.NewId("valueArray"))
+			body.Return(value.NewId("inputArray"))
 		},
 		Facts: []Fact{
 			{
@@ -95,13 +95,13 @@ var ArraySuite = Suite{
 		Name:        "Remove",
 		Description: "Removes a value from an array and returns the result",
 		Parameters: []agnostic.Field{
-			{Name: "array", Type: types.NewArray(types.BaseInt)},
+			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "index", Type: types.BaseInt},
 		},
 		Returns: types.NewArray(types.BaseInt),
 		Generator: func(body agnostic.BodyImplementation) {
-			body.RemoveValue(value.NewId("array"), value.NewId("index"))
-			body.Return(value.NewId("array"))
+			body.RemoveValue(value.NewId("inputArray"), value.NewId("index"))
+			body.Return(value.NewId("inputArray"))
 		},
 		Facts: []Fact{
 			{
