@@ -1,6 +1,7 @@
 package test
 
 import (
+	"errors"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
@@ -25,10 +26,7 @@ func ComposeSuites(suites ...Suite) Suite {
 
 // Generates the agnostic code (methods and models) for all test suites
 func (s Suite) GenerateAgnostic(implementation agnostic.Implementation) {
-	implementation.Model("TestModel",
-		agnostic.Field{Name: "Int", Type: types.BaseInt},
-		agnostic.Field{Name: "IntArray", Type: types.NewArray(types.BaseInt)},
-	)
+	implementation.Model("TestModel", s.GetModelFields()...)
 
 	for _, c := range s {
 		if c.Returns == nil {
@@ -46,6 +44,27 @@ func (s Suite) GenerateTests(implementation Implementation) {
 	}
 }
 
+func (s Suite) GetModelFields() []agnostic.Field {
+	fields := make([]agnostic.Field, 0)
+	fieldTypes := make(map[string]types.Any)
+	for _, c := range s {
+		for _, field := range c.ModelFields {
+			existingType, ok := fieldTypes[field.Name]
+			if ok {
+				// Ensure that the two fields have the same type
+				if existingType != field.Type {
+					panic(errors.New("multiple requests for field \"" + field.Name + "\" with different types"))
+				}
+			} else {
+				fields = append(fields, field)
+				fieldTypes[field.Name] = field.Type
+			}
+		}
+	}
+
+	return fields
+}
+
 var AllSuites = ComposeSuites(
 	ArraySuite,
 	MapSuite,
@@ -59,6 +78,7 @@ type GenerateBodyFunc func(body agnostic.BodyImplementation)
 type Case struct {
 	Name        string           // Name of the test case (must be unique)
 	Description string           // Describes what the test case is for
+	ModelFields []agnostic.Field // Fields that need to exist on TestModel for this test
 	Parameters  []agnostic.Field // Parameters that the generated test method will take in
 	Returns     types.Any        // The return type of the method or nil if it returns nothing
 	Generator   GenerateBodyFunc // Function that generates the method that the test will target
