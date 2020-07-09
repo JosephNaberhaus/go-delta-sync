@@ -69,6 +69,7 @@ var AllSuites = ComposeSuites(
 	ArraySuite,
 	MapSuite,
 	ForSuite,
+	IfSuite,
 )
 
 // A function that takes the given body implementation and the method that the
