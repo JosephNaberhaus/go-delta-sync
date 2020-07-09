@@ -12,25 +12,25 @@ import (
 	"strings"
 )
 
-type GoImplementation struct {
+type Implementation struct {
 	packageName string
 	code        []Code
 }
 
-type GoBodyImplementation struct {
+type BodyImplementation struct {
 	receiverName string
 	block        *Statement
 }
 
-func (g *GoImplementation) Add(c ...Code) {
+func (g *Implementation) Add(c ...Code) {
 	g.code = append(g.code, c...)
 }
 
-func (g *GoBodyImplementation) Add(c ...Code) {
+func (g *BodyImplementation) Add(c ...Code) {
 	g.block.Add(lines(c...))
 }
 
-func (g *GoImplementation) Write(fileName string) {
+func (g *Implementation) Write(fileName string) {
 	jenFile := NewFile(g.packageName)
 	jenFile.Add(lines(g.code...))
 	err := jenFile.Save(fileName + ".go")
@@ -39,7 +39,7 @@ func (g *GoImplementation) Write(fileName string) {
 	}
 }
 
-func (g *GoImplementation) Model(modelName agnostic.ModelName, fields ...agnostic.Field) {
+func (g *Implementation) Model(modelName agnostic.ModelName, fields ...agnostic.Field) {
 	modelStructFields := make([]Code, 0)
 	for _, field := range fields {
 		modelStructFields = append(modelStructFields, Id(field.Name).Add(resolveType(field.Type)))
@@ -48,7 +48,7 @@ func (g *GoImplementation) Model(modelName agnostic.ModelName, fields ...agnosti
 	g.Add(Type().Id(string(modelName)).Struct(modelStructFields...))
 }
 
-func (g *GoImplementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
+func (g *Implementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	receiverName := strings.ToLower(modelName[:1])
 	block := Null()
 
@@ -59,13 +59,13 @@ func (g *GoImplementation) Method(modelName, methodName string, parameters ...ag
 
 	g.Add(Func().Params(Id(receiverName).Op("*").Id(modelName)).Id(methodName).Params(parametersCode...).Block(block))
 
-	return &GoBodyImplementation{
+	return &BodyImplementation{
 		receiverName: receiverName,
 		block:        block,
 	}
 }
 
-func (g *GoImplementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) agnostic.BodyImplementation {
+func (g *Implementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	receiverName := strings.ToLower(modelName[:1])
 	block := Null()
 
@@ -76,52 +76,52 @@ func (g *GoImplementation) ReturnMethod(modelName, methodName string, returnType
 
 	g.Add(Func().Params(Id(receiverName).Op("*").Id(modelName)).Id(methodName).Params(parametersCode...).Add(resolveType(returnType)).Block(block))
 
-	return &GoBodyImplementation{
+	return &BodyImplementation{
 		receiverName: receiverName,
 		block:        block,
 	}
 }
 
-func (g *GoBodyImplementation) Assign(assignee, assigned value.Any) {
+func (g *BodyImplementation) Assign(assignee, assigned value.Any) {
 	g.Add(resolveValue(assignee, g).Op("=").Add(resolveValue(assigned, g)))
 }
 
-func (g *GoBodyImplementation) Declare(name string, value value.Any) {
+func (g *BodyImplementation) Declare(name string, value value.Any) {
 	g.Add(Id(name).Op(":=").Add(resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) DeclareArray(name string, arrayType types.Any) {
+func (g *BodyImplementation) DeclareArray(name string, arrayType types.Any) {
 	g.Add(Id(name).Op(":=").Make(Index().Add(resolveType(arrayType)), Lit(0)))
 }
 
-func (g *GoBodyImplementation) DeclareMap(name string, keyType, valueType types.Any) {
+func (g *BodyImplementation) DeclareMap(name string, keyType, valueType types.Any) {
 	g.Add(Id(name).Op(":=").Make(Map(Add(resolveType(keyType))).Add(resolveType(valueType))))
 }
 
-func (g *GoBodyImplementation) AppendValue(array, value value.Any) {
+func (g *BodyImplementation) AppendValue(array, value value.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) AppendArray(array, valueArray value.Any) {
+func (g *BodyImplementation) AppendArray(array, valueArray value.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(valueArray, g).Op("...")))
 }
 
-func (g *GoBodyImplementation) RemoveValue(array, index value.Any) {
+func (g *BodyImplementation) RemoveValue(array, index value.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(
 		resolveValue(array, g).Index(Op(":").Add(resolveValue(index, g))),
 		resolveValue(array, g).Index(resolveValue(index, g).Op("+").Lit(1).Op(":")).Op("..."),
 	))
 }
 
-func (g *GoBodyImplementation) MapPut(mapValue, key, value value.Any) {
+func (g *BodyImplementation) MapPut(mapValue, key, value value.Any) {
 	g.Add(resolveValue(mapValue, g).Index(resolveValue(key, g)).Op("=").Add(resolveValue(value, g)))
 }
 
-func (g *GoBodyImplementation) MapDelete(mapValue, key value.Any) {
+func (g *BodyImplementation) MapDelete(mapValue, key value.Any) {
 	g.Add(Delete(resolveValue(mapValue, g), resolveValue(key, g)))
 }
 
-func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
+func (g *BodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
 	if indexName == "" {
 		indexName = "_"
 	}
@@ -132,31 +132,31 @@ func (g *GoBodyImplementation) ForEach(array value.Any, indexName, valueName str
 
 	block := Null()
 	g.Add(For(Id(indexName).Op(",").Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
-	return &GoBodyImplementation{
+	return &BodyImplementation{
 		receiverName: g.receiverName,
 		block:        block,
 	}
 }
 
-func (g *GoBodyImplementation) If(value value.Any) agnostic.BodyImplementation {
+func (g *BodyImplementation) If(value value.Any) agnostic.BodyImplementation {
 	block := Null()
 	g.Add(If(resolveValue(value, g)).Block(block))
 
-	return &GoBodyImplementation{
+	return &BodyImplementation{
 		receiverName: g.receiverName,
 		block:        block,
 	}
 }
 
-func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody agnostic.BodyImplementation) {
+func (g *BodyImplementation) IfElse(value value.Any) (trueBody, falseBody agnostic.BodyImplementation) {
 	trueBlock, falseBlock := Null(), Null()
 	g.Add(If(resolveValue(value, g)).Block(trueBlock).Else().Block(falseBlock))
 
-	trueBodyImplementation := &GoBodyImplementation{
+	trueBodyImplementation := &BodyImplementation{
 		receiverName: g.receiverName,
 		block:        trueBlock,
 	}
-	falseBodyImplementation := &GoBodyImplementation{
+	falseBodyImplementation := &BodyImplementation{
 		receiverName: g.receiverName,
 		block:        falseBlock,
 	}
@@ -164,17 +164,17 @@ func (g *GoBodyImplementation) IfElse(value value.Any) (trueBody, falseBody agno
 	return trueBodyImplementation, falseBodyImplementation
 }
 
-func (g *GoBodyImplementation) Return(value value.Any) {
+func (g *BodyImplementation) Return(value value.Any) {
 	g.Add(Return(resolveValue(value, g)))
 }
 
-func Implementation(args map[string]string) agnostic.Implementation {
+func NewImplementation(args map[string]string) agnostic.Implementation {
 	packageName, ok := args["package"]
 	if !ok {
 		panic(errors.New("no package name supplied"))
 	}
 
-	return &GoImplementation{
+	return &Implementation{
 		code:        make([]Code, 0),
 		packageName: packageName,
 	}
@@ -219,8 +219,8 @@ func resolveBaseType(base types.Base) *Statement {
 }
 
 // Convert a value interface into its representation into Go code form
-func resolveValue(any value.Any, optionalContext ...*GoBodyImplementation) *Statement {
-	var context *GoBodyImplementation
+func resolveValue(any value.Any, optionalContext ...*BodyImplementation) *Statement {
+	var context *BodyImplementation
 	if len(optionalContext) == 0 && any.IsMethodDependent() {
 		panic(errors.New("no context provided for method dependent value"))
 	} else if len(optionalContext) == 1 {

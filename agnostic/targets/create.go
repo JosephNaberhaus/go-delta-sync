@@ -9,7 +9,7 @@ import (
 
 func CreateImplementation(name string, args map[string]string) (implementation agnostic.Implementation, err error) {
 	if name == "go" {
-		return golang.Implementation(args), nil
+		return golang.NewImplementation(args), nil
 	}
 
 	return nil, errors.New("No implementation found for \"" + name + "\"")
