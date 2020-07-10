@@ -58,6 +58,12 @@ func (i *Implementation) AddOrphan(orphan *OrphanCode) {
 	i.orphans = append(i.orphans, orphan)
 }
 
+func NewImplementation(args map[string]string) agnostic.Implementation {
+	return &Implementation{
+		code: make([]Code, 0),
+	}
+}
+
 type BodyImplementation struct {
 	code []Code
 }
