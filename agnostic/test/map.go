@@ -8,20 +8,6 @@ import (
 
 var MapSuite = Suite{
 	{
-		Name:        "DeclareMap",
-		Description: "Declares a map and then returns it",
-		Returns:     types.NewMap(types.BaseInt, types.BaseString),
-		Generator: func(body agnostic.BodyImplementation) {
-			body.DeclareMap("declared", types.BaseInt, types.BaseString)
-			body.Return(value.NewId("declared"))
-		},
-		Facts: []Fact{
-			{
-				Output: value.NewMap(types.BaseInt, types.BaseString),
-			},
-		},
-	},
-	{
 		Name:        "MapPut",
 		Description: "Puts a value into a map and returns it",
 		Returns:     types.NewMap(types.BaseInt, types.BaseString),

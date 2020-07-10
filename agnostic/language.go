@@ -41,12 +41,6 @@ type BodyImplementation interface {
 	// Declares a new variable with the given value
 	// Go Code: `<name> := <value>`
 	Declare(name string, value value.Any)
-	// Declares a new array variable containing value of the given type
-	// Go Code: `<name> := make(<arrayType>[]>, 0)
-	DeclareArray(name string, arrayType types.Any)
-	// Declares a new map variable
-	// Go Code: `<name> := make(map[<keyType>]<valueType>)
-	DeclareMap(name string, keyType, valueType types.Any)
 
 	// Appends a value to the end of an array and ensures that the array value
 	// points to the result. This comes with no guarantees that a different

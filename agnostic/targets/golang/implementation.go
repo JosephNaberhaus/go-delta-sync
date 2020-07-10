@@ -90,14 +90,6 @@ func (g *BodyImplementation) Declare(name string, value value.Any) {
 	g.Add(Id(name).Op(":=").Add(resolveValue(value, g)))
 }
 
-func (g *BodyImplementation) DeclareArray(name string, arrayType types.Any) {
-	g.Add(Id(name).Op(":=").Make(Index().Add(resolveType(arrayType)), Lit(0)))
-}
-
-func (g *BodyImplementation) DeclareMap(name string, keyType, valueType types.Any) {
-	g.Add(Id(name).Op(":=").Make(Map(Add(resolveType(keyType))).Add(resolveType(valueType))))
-}
-
 func (g *BodyImplementation) AppendValue(array, value value.Any) {
 	g.Add(resolveValue(array, g).Op("=").Append(resolveValue(array, g), resolveValue(value, g)))
 }
