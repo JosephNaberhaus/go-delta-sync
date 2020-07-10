@@ -5,6 +5,7 @@ package typescript
 import (
 	"errors"
 	"fmt"
+	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 	"io"
@@ -21,7 +22,7 @@ type Code interface {
 type Line string
 
 func (n Line) Write(out io.Writer, indentLevel int) error {
-	_, err := io.WriteString(out, fmt.Sprintf("%*s", indentLevel, n))
+	_, err := io.WriteString(out, fmt.Sprintf("%*s\n", indentLevel, n))
 	return err
 }
 
@@ -50,6 +51,10 @@ func (b *BodyImplementation) Write(out io.Writer, indentLevel int) error {
 	}
 
 	return nil
+}
+
+func (i *Implementation) Model(name string, fields ...agnostic.Field) {
+	i.Add(Line("test"))
 }
 
 func resolveType(any types.Any) string {
