@@ -37,15 +37,11 @@ func (i Implementation) Add(line Code) {
 	i.lines = append(i.lines, line)
 }
 
-func NewBodyImplementation() BodyImplementation {
-	return BodyImplementation{lines: make([]Code, 0)}
-}
-
-func (b BodyImplementation) Add(line Code) {
+func (b *BodyImplementation) Add(line Code) {
 	b.lines = append(b.lines, line)
 }
 
-func (b BodyImplementation) Write(out io.Writer, indentLevel int) error {
+func (b *BodyImplementation) Write(out io.Writer, indentLevel int) error {
 	for _, line := range b.lines {
 		err := line.Write(out, indentLevel+IndentAmount)
 		if err != nil {
