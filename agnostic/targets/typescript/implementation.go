@@ -19,6 +19,22 @@ type Code interface {
 	Write(out io.Writer, indentLevel int) error
 }
 
+type OrphanCode struct {
+	belongsTo string
+	code      []Code
+}
+
+func (o *OrphanCode) Add(code ...Code) {
+	o.code = append(o.code, code...)
+}
+
+func NewOrphanCode(belongsTo string) *OrphanCode {
+	return &OrphanCode{
+		belongsTo: belongsTo,
+		code:      make([]Code, 0),
+	}
+}
+
 type Line string
 
 func (n Line) Write(out io.Writer, indentLevel int) error {
@@ -27,23 +43,29 @@ func (n Line) Write(out io.Writer, indentLevel int) error {
 }
 
 type Implementation struct {
-	lines []Code
+	code        []Code
+	modelBodies map[string]*BodyImplementation
+	orphans     []*OrphanCode
+}
+
+func (i *Implementation) Add(code ...Code) {
+	i.code = append(i.code, code...)
+}
+
+func (i *Implementation) AddOrphan(orphan *OrphanCode) {
+	i.orphans = append(i.orphans, orphan)
 }
 
 type BodyImplementation struct {
-	lines []Code
+	code []Code
 }
 
-func (i Implementation) Add(line Code) {
-	i.lines = append(i.lines, line)
-}
-
-func (b *BodyImplementation) Add(line Code) {
-	b.lines = append(b.lines, line)
+func (b *BodyImplementation) Add(code ...Code) {
+	b.code = append(b.code, code...)
 }
 
 func (b *BodyImplementation) Write(out io.Writer, indentLevel int) error {
-	for _, line := range b.lines {
+	for _, line := range b.code {
 		err := line.Write(out, indentLevel+IndentAmount)
 		if err != nil {
 			return err
@@ -53,8 +75,20 @@ func (b *BodyImplementation) Write(out io.Writer, indentLevel int) error {
 	return nil
 }
 
+func NewBodyImplementation() *BodyImplementation {
+	return &BodyImplementation{code: make([]Code, 0)}
+}
+
 func (i *Implementation) Model(name string, fields ...agnostic.Field) {
-	i.Add(Line("test"))
+	body := NewBodyImplementation()
+	for _, field := range fields {
+		body.Add(Line(field.Name + ": " + resolveType(field.Type) + ";"))
+	}
+
+	i.Add(Line("export class " + name + "{"))
+	i.Add(body)
+	i.Add(Line("}"))
+}
 }
 
 func resolveType(any types.Any) string {
