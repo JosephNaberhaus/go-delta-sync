@@ -132,6 +132,69 @@ func (i *Implementation) ReturnMethod(modelName, methodName string, returnType t
 	return methodBody
 }
 
+func (b *BodyImplementation) Assign(assignee, assigned value.Any) {
+	b.Add(Line(resolveValue(assignee) + " " + resolveValue(assigned) + ";"))
+}
+
+func (b *BodyImplementation) Declare(name string, value value.Any) {
+	b.Add(Line("let " + name + " = " + resolveValue(value) + ";"))
+}
+
+func (b *BodyImplementation) AppendValue(array, value value.Any) {
+	b.Add(Line(resolveValue(array) + ".push(" + resolveValue(value) + ");"))
+}
+
+func (b *BodyImplementation) AppendArray(array, valueArray value.Any) {
+	b.Add(Line(resolveValue(array) + ".push(..." + resolveValue(valueArray) + ");"))
+}
+
+func (b *BodyImplementation) RemoveValue(array, index value.Any) {
+	b.Add(Line(resolveValue(array) + ".splice(" + resolveValue(index) + ", 1);"))
+}
+
+func (b *BodyImplementation) MapPut(mapValue, key, value value.Any) {
+	b.Add(Line(resolveValue(mapValue) + ".put(" + resolveValue(key) + ", " + resolveValue(value) + ");"))
+}
+
+func (b *BodyImplementation) MapDelete(mapValue, key value.Any) {
+	b.Add(Line(resolveValue(mapValue) + ".delete(" + resolveValue(key) + ");"))
+}
+
+func (b *BodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
+	forEachBody := NewBodyImplementation()
+
+	b.Add(Line(resolveValue(array) + ".forEach((" + indexName + ", " + valueName + ") => {"))
+	b.Add(forEachBody)
+	b.Add(Line("});"))
+
+	return forEachBody
+}
+
+func (b *BodyImplementation) If(value value.Any) agnostic.BodyImplementation {
+	ifBody := NewBodyImplementation()
+
+	b.Add(Line("if (" + resolveValue(value) + ") {"))
+	b.Add(ifBody)
+	b.Add(Line("}"))
+}
+
+func (b *BodyImplementation) IfElse(value value.Any) (trueBody, falseBody agnostic.BodyImplementation) {
+	trueBody = NewBodyImplementation()
+	falseBody = NewBodyImplementation()
+
+	b.Add(Line("if (" + resolveValue(value) + ") {"))
+	b.Add(trueBody)
+	b.Add(Line("} else {"))
+	b.Add(falseBody)
+	b.Add(Line("}"))
+
+	return
+}
+
+func (b *BodyImplementation) Return(value value.Any) {
+	b.Add(Line("return " + resolveValue(value) + ";"))
+}
+
 func resolveType(any types.Any) string {
 	switch t := any.(type) {
 	case types.Base:
