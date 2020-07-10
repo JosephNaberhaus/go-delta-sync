@@ -89,6 +89,47 @@ func (i *Implementation) Model(name string, fields ...agnostic.Field) {
 	i.Add(body)
 	i.Add(Line("}"))
 }
+
+func (i *Implementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
+	orphan := NewOrphanCode(modelName)
+
+	var parametersString strings.Builder
+	for i, parameter := range parameters {
+		parametersString.WriteString(parameter.Name + ": " + resolveType(parameter.Type))
+
+		if i-1 != len(parameters) {
+			parametersString.WriteString(", ")
+		}
+	}
+
+	methodBody := NewBodyImplementation()
+
+	orphan.Add(Line("public " + methodName + "(" + parametersString.String() + ") {"))
+	orphan.Add(methodBody)
+	orphan.Add(Line("}"))
+
+	return methodBody
+}
+
+func (i *Implementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) BodyImplementation {
+	orphan := NewOrphanCode(modelName)
+
+	var parametersString strings.Builder
+	for i, parameter := range parameters {
+		parametersString.WriteString(parameter.Name + ": " + resolveType(parameter.Type))
+
+		if i-1 != len(parameters) {
+			parametersString.WriteString(", ")
+		}
+	}
+
+	methodBody := NewBodyImplementation()
+
+	orphan.Add(Line("public " + methodName + "(" + parametersString.String() + "): " + resolveType(returnType) + "{"))
+	orphan.Add(methodBody)
+	orphan.Add(Line("}"))
+
+	return methodBody
 }
 
 func resolveType(any types.Any) string {
