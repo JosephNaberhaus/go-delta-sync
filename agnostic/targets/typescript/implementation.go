@@ -3,12 +3,14 @@
 package typescript
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -79,6 +81,36 @@ func NewBodyImplementation() *BodyImplementation {
 	return &BodyImplementation{code: make([]Code, 0)}
 }
 
+func (i *Implementation) Write(fileName string) {
+	for _, orphan := range i.orphans {
+		body, ok := i.modelBodies[orphan.belongsTo]
+		if !ok {
+			panic(errors.New("no model with name \"" + orphan.belongsTo + "\" found for method"))
+		}
+
+		body.Add(orphan.code...)
+	}
+
+	file, err := os.Create(fileName + ".ts")
+	if err != nil {
+		panic(err)
+	}
+
+	writer := bufio.NewWriter(file)
+
+	for _, c := range i.code {
+		err = c.Write(writer, 0)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	err = file.Close()
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (i *Implementation) Model(name string, fields ...agnostic.Field) {
 	body := NewBodyImplementation()
 	for _, field := range fields {
@@ -111,7 +143,7 @@ func (i *Implementation) Method(modelName, methodName string, parameters ...agno
 	return methodBody
 }
 
-func (i *Implementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) BodyImplementation {
+func (i *Implementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	orphan := NewOrphanCode(modelName)
 
 	var parametersString strings.Builder
@@ -176,19 +208,21 @@ func (b *BodyImplementation) If(value value.Any) agnostic.BodyImplementation {
 	b.Add(Line("if (" + resolveValue(value) + ") {"))
 	b.Add(ifBody)
 	b.Add(Line("}"))
+
+	return ifBody
 }
 
 func (b *BodyImplementation) IfElse(value value.Any) (trueBody, falseBody agnostic.BodyImplementation) {
-	trueBody = NewBodyImplementation()
-	falseBody = NewBodyImplementation()
+	ifBody := NewBodyImplementation()
+	elseBody := NewBodyImplementation()
 
 	b.Add(Line("if (" + resolveValue(value) + ") {"))
-	b.Add(trueBody)
+	b.Add(ifBody)
 	b.Add(Line("} else {"))
-	b.Add(falseBody)
+	b.Add(elseBody)
 	b.Add(Line("}"))
 
-	return
+	return ifBody, elseBody
 }
 
 func (b *BodyImplementation) Return(value value.Any) {
