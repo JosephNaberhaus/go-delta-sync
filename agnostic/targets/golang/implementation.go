@@ -39,7 +39,7 @@ func (g *Implementation) Write(fileName string) {
 	}
 }
 
-func (g *Implementation) Model(modelName agnostic.ModelName, fields ...agnostic.Field) {
+func (g *Implementation) Model(modelName string, fields ...agnostic.Field) {
 	modelStructFields := make([]Code, 0)
 	for _, field := range fields {
 		modelStructFields = append(modelStructFields, Id(field.Name).Add(resolveType(field.Type)))

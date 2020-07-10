@@ -5,8 +5,6 @@ import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
 )
 
-type ModelName string
-
 type Field struct {
 	Name string
 	Type types.Any
@@ -21,7 +19,7 @@ type Implementation interface {
 
 	// Creates a new model
 	// Go Code: type <name> struct { <fields> }
-	Model(name ModelName, fields ...Field)
+	Model(name string, fields ...Field)
 
 	// Create a new method. A method is simply a function that runs under the
 	// context of a model and has direct access to its contents
