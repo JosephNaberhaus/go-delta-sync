@@ -40,6 +40,7 @@ func NewOrphanCode(belongsTo string) *OrphanCode {
 type Line string
 
 func (n Line) Write(out io.Writer, indentLevel int) error {
+	println(n)
 	_, err := io.WriteString(out, fmt.Sprintf("%*s\n", indentLevel, n))
 	return err
 }
@@ -54,13 +55,21 @@ func (i *Implementation) Add(code ...Code) {
 	i.code = append(i.code, code...)
 }
 
+func (i *Implementation) RegisterModel(modelName string, body *BodyImplementation) {
+	println(modelName)
+	i.modelBodies[modelName] = body
+}
+
 func (i *Implementation) AddOrphan(orphan *OrphanCode) {
+	println(orphan.belongsTo)
 	i.orphans = append(i.orphans, orphan)
 }
 
 func NewImplementation(args map[string]string) agnostic.Implementation {
 	return &Implementation{
-		code: make([]Code, 0),
+		code:        make([]Code, 0),
+		modelBodies: make(map[string]*BodyImplementation),
+		orphans:     make([]*OrphanCode, 0),
 	}
 }
 
@@ -111,6 +120,11 @@ func (i *Implementation) Write(fileName string) {
 		}
 	}
 
+	err = writer.Flush()
+	if err != nil {
+		panic(err)
+	}
+
 	err = file.Close()
 	if err != nil {
 		panic(err)
@@ -126,10 +140,13 @@ func (i *Implementation) Model(name string, fields ...agnostic.Field) {
 	i.Add(Line("export class " + name + "{"))
 	i.Add(body)
 	i.Add(Line("}"))
+
+	i.RegisterModel(name, body)
 }
 
 func (i *Implementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	orphan := NewOrphanCode(modelName)
+	i.AddOrphan(orphan)
 
 	var parametersString strings.Builder
 	for i, parameter := range parameters {
@@ -151,6 +168,7 @@ func (i *Implementation) Method(modelName, methodName string, parameters ...agno
 
 func (i *Implementation) ReturnMethod(modelName, methodName string, returnType types.Any, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	orphan := NewOrphanCode(modelName)
+	i.AddOrphan(orphan)
 
 	var parametersString strings.Builder
 	for i, parameter := range parameters {
