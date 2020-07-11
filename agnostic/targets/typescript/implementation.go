@@ -328,9 +328,15 @@ func resolveValue(any value.Any) string {
 	case value.Map:
 		var sb strings.Builder
 
-		sb.WriteString(resolveType(types.NewMap(v.KeyType(), v.ValueType())) + "([")
+		sb.WriteString("new ")
+		sb.WriteString(resolveType(types.NewMap(v.KeyType(), v.ValueType())))
+		sb.WriteString("([")
 		for i, element := range v.Elements() {
-			sb.WriteString("[" + resolveValue(element.Key()) + ", " + resolveValue(element.Value()) + "]")
+			sb.WriteString("[")
+			sb.WriteString(resolveValue(element.Key()))
+			sb.WriteString(", ")
+			sb.WriteString(resolveValue(element.Value()))
+			sb.WriteString("]")
 
 			if i-1 != len(v.Elements()) {
 				sb.WriteString(", ")
