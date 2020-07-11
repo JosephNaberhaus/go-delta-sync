@@ -86,7 +86,7 @@ func (t *TestImplementation) Test(testCase test.Case) {
 		}
 
 		t.DecreaseIndentation()
-		t.Add("}")
+		t.Add("});")
 	}
 }
 
