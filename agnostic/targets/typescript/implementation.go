@@ -208,7 +208,7 @@ func (b *BodyImplementation) RemoveValue(array, index value.Any) {
 }
 
 func (b *BodyImplementation) MapPut(mapValue, key, value value.Any) {
-	b.Add(Line(resolveValue(mapValue) + ".put(" + resolveValue(key) + ", " + resolveValue(value) + ");"))
+	b.Add(Line(resolveValue(mapValue) + ".set(" + resolveValue(key) + ", " + resolveValue(value) + ");"))
 }
 
 func (b *BodyImplementation) MapDelete(mapValue, key value.Any) {
