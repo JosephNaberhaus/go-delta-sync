@@ -219,13 +219,13 @@ func (b *BodyImplementation) ForEach(array value.Any, indexName, valueName strin
 	forEachParams := ""
 	if indexName == "" {
 		if valueName != "" {
-			forEachParams = "_, " + valueName
+			forEachParams = valueName
 		}
 	} else {
 		if valueName == "" {
-			forEachParams = indexName
+			forEachParams = "_, " + indexName
 		} else {
-			forEachParams = indexName + ", " + valueName
+			forEachParams = valueName + ", " + indexName
 		}
 	}
 
