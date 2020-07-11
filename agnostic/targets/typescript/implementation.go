@@ -40,8 +40,7 @@ func NewOrphanCode(belongsTo string) *OrphanCode {
 type Line string
 
 func (n Line) Write(out io.Writer, indentLevel int) error {
-	println(n)
-	_, err := io.WriteString(out, fmt.Sprintf("%*s\n", indentLevel, n))
+	_, err := io.WriteString(out, strings.Repeat("\t", indentLevel)+string(n)+"\n")
 	return err
 }
 
