@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+const TestPreamble = `import {TestModel} from "./agnostic-test";
+import * as assert from "assert";
+describe('AgnosticTest', () => {
+`
+
+const TestPostscript = "});\n"
+
 type TestImplementation struct {
 	code           strings.Builder
 	curIndentation int
@@ -34,7 +41,17 @@ func (t *TestImplementation) Write(fileName string) {
 
 	writer := bufio.NewWriter(file)
 
+	_, err = writer.WriteString(TestPreamble)
+	if err != nil {
+		panic(err)
+	}
+
 	_, err = writer.WriteString(t.code.String())
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = writer.WriteString(TestPostscript)
 	if err != nil {
 		panic(err)
 	}
@@ -75,6 +92,6 @@ func (t *TestImplementation) Test(testCase test.Case) {
 
 func NewTestImplementation(args map[string]string) test.Implementation {
 	return &TestImplementation{
-		curIndentation: 0,
+		curIndentation: 1,
 	}
 }

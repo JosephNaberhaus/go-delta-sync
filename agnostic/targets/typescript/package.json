@@ -1,8 +1,9 @@
 {
   "name": "agnostic-typescript-implementation",
   "version": "0.0.0",
-  ""
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^14.0.22",
+    "mocha": "^8.0.1",
     "typescript": "^3.9.6"
   }
 }
