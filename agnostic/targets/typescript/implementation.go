@@ -15,8 +15,6 @@ import (
 	"strings"
 )
 
-const IndentAmount = 2
-
 type Code interface {
 	Write(out io.Writer, indentLevel int) error
 }
@@ -82,7 +80,7 @@ func (b *BodyImplementation) Add(code ...Code) {
 
 func (b *BodyImplementation) Write(out io.Writer, indentLevel int) error {
 	for _, line := range b.code {
-		err := line.Write(out, indentLevel+IndentAmount)
+		err := line.Write(out, indentLevel+1)
 		if err != nil {
 			return err
 		}
