@@ -1,10 +1,14 @@
 {
   "name": "agnostic-typescript-implementation",
   "version": "0.0.0",
+  "scripts": {
+    "test": "mocha implementation_test.ts --require ts-node/register"
+  },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
     "@types/node": "^14.0.22",
     "mocha": "^8.0.1",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.6"
   }
 }
