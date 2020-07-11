@@ -1,0 +1,8 @@
+{
+  "name": "agnostic-typescript-implementation",
+  "version": "0.0.0",
+  ""
+  "dependencies": {
+    "typescript": "^3.9.6"
+  }
+}
