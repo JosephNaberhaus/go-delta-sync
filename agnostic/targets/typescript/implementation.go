@@ -218,7 +218,20 @@ func (b *BodyImplementation) MapDelete(mapValue, key value.Any) {
 func (b *BodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
 	forEachBody := NewBodyImplementation()
 
-	b.Add(Line(resolveValue(array) + ".forEach((" + indexName + ", " + valueName + ") => {"))
+	forEachParams := ""
+	if indexName == "" {
+		if valueName != "" {
+			forEachParams = "_, " + valueName
+		}
+	} else {
+		if valueName == "" {
+			forEachParams = indexName
+		} else {
+			forEachParams = indexName + ", " + valueName
+		}
+	}
+
+	b.Add(Line(resolveValue(array) + ".forEach((" + forEachParams + ") => {"))
 	b.Add(forEachBody)
 	b.Add(Line("});"))
 
