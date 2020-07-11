@@ -85,7 +85,7 @@ func (t *TestImplementation) Test(testCase test.Case) {
 
 		if fact.Output != nil {
 			t.Add("const result = model." + testCase.Name + "(" + inputs.String() + ");")
-			t.Add("assert.equal(" + resolveValue(fact.Output) + ", result);")
+			t.Add("assert.deepStrictEqual(" + resolveValue(fact.Output) + ", result);")
 		} else {
 			t.Add("model." + testCase.Name + "(" + inputs.String() + ");")
 		}
