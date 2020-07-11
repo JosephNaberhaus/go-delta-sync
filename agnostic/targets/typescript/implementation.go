@@ -188,7 +188,7 @@ func (i *Implementation) ReturnMethod(modelName, methodName string, returnType t
 }
 
 func (b *BodyImplementation) Assign(assignee, assigned value.Any) {
-	b.Add(Line(resolveValue(assignee) + " " + resolveValue(assigned) + ";"))
+	b.Add(Line(resolveValue(assignee) + " = " + resolveValue(assigned) + ";"))
 }
 
 func (b *BodyImplementation) Declare(name string, value value.Any) {
