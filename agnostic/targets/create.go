@@ -20,7 +20,7 @@ func CreateImplementation(name string, args map[string]string) (implementation a
 
 func CreateTestImplementation(name string, args map[string]string) (implementation test.Implementation, err error) {
 	if name == "go" {
-		return golang.TestImplementation(args), nil
+		return golang.NewTestImplementation(args), nil
 	}
 
 	return nil, errors.New("No test implementation found for \"" + name + "\"")

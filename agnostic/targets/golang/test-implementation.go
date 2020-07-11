@@ -6,20 +6,20 @@ import (
 	. "github.com/dave/jennifer/jen"
 )
 
-type GoTestImplementation struct {
+type TestImplementation struct {
 	packageName string
 	code        []Code
 }
 
-func (g *GoTestImplementation) Receiver() string {
+func (g *TestImplementation) Receiver() string {
 	return "TestMode"
 }
 
-func (g *GoTestImplementation) Add(c ...Code) {
+func (g *TestImplementation) Add(c ...Code) {
 	g.code = append(g.code, c...)
 }
 
-func (g *GoTestImplementation) Write(fileName string) {
+func (g *TestImplementation) Write(fileName string) {
 	jenFile := NewFile(g.packageName)
 	jenFile.Add(lines(g.code...))
 	err := jenFile.Save(fileName + ".go")
@@ -28,7 +28,7 @@ func (g *GoTestImplementation) Write(fileName string) {
 	}
 }
 
-func (g *GoTestImplementation) Test(testCase test.Case) {
+func (g *TestImplementation) Test(testCase test.Case) {
 	for _, fact := range testCase.Facts {
 		testBody := make([]Code, 0)
 
@@ -69,13 +69,13 @@ func testifyRequire(assertion string) *Statement {
 	return Qual("github.com/stretchr/testify/require", assertion)
 }
 
-func TestImplementation(args map[string]string) test.Implementation {
+func NewTestImplementation(args map[string]string) test.Implementation {
 	packageName, ok := args["package"]
 	if !ok {
 		panic(errors.New("no package name supplied"))
 	}
 
-	return &GoTestImplementation{
+	return &TestImplementation{
 		code:        make([]Code, 0),
 		packageName: packageName,
 	}
