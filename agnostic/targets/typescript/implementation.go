@@ -151,7 +151,7 @@ func (i *Implementation) Method(modelName, methodName string, parameters ...agno
 	for i, parameter := range parameters {
 		parametersString.WriteString(parameter.Name + ": " + resolveType(parameter.Type))
 
-		if i-1 != len(parameters) {
+		if i+1 != len(parameters) {
 			parametersString.WriteString(", ")
 		}
 	}
@@ -173,7 +173,7 @@ func (i *Implementation) ReturnMethod(modelName, methodName string, returnType t
 	for i, parameter := range parameters {
 		parametersString.WriteString(parameter.Name + ": " + resolveType(parameter.Type))
 
-		if i-1 != len(parameters) {
+		if i+1 != len(parameters) {
 			parametersString.WriteString(", ")
 		}
 	}
