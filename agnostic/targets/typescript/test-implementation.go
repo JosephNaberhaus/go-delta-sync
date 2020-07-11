@@ -74,15 +74,24 @@ func (t *TestImplementation) Test(testCase test.Case) {
 
 		t.Add("const model = new TestModel();")
 
+		var inputs strings.Builder
+		for i, input := range fact.Inputs {
+			inputs.WriteString(resolveValue(input))
+
+			if i+1 != len(fact.Inputs) {
+				inputs.WriteString(", ")
+			}
+		}
+
 		if fact.Output != nil {
-			t.Add("const result = model." + testCase.Name + "();")
+			t.Add("const result = model." + testCase.Name + "(" + inputs.String() + ");")
 			t.Add("assert.equal(" + resolveValue(fact.Output) + ", result);")
 		} else {
-			t.Add("model." + testCase.Name + "();")
+			t.Add("model." + testCase.Name + "(" + inputs.String() + ");")
 		}
 
 		for _, sideEffect := range fact.SideEffects {
-			t.Add("assert.equal(" + resolveValue(sideEffect.ExpectedValue) + ", model." + sideEffect.FieldName + ");")
+			t.Add("assert.deepStrictEqual(" + resolveValue(sideEffect.ExpectedValue) + ", model." + sideEffect.FieldName + ");")
 		}
 
 		t.DecreaseIndentation()
