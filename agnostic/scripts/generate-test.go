@@ -31,11 +31,11 @@ func main() {
 	test.AllSuites.GenerateAgnostic(implementation)
 	implementation.Write("agnostic-test")
 
-	//testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//test.AllSuites.GenerateTests(testImplementation)
-	//testImplementation.Write("implementation_test")
+	testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
+	if err != nil {
+		panic(err)
+	}
+
+	test.AllSuites.GenerateTests(testImplementation)
+	testImplementation.Write("implementation_test")
 }
