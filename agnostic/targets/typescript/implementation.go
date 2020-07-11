@@ -314,15 +314,15 @@ func resolveValue(any value.Any) string {
 	case value.Array:
 		var sb strings.Builder
 
-		sb.WriteString(resolveType(v.ElementType()) + "[] {")
+		sb.WriteString("[")
 		for i, element := range v.Elements() {
 			sb.WriteString(resolveValue(element))
 
-			if i-1 != len(v.Elements()) {
+			if i+1 != len(v.Elements()) {
 				sb.WriteString(", ")
 			}
 		}
-		sb.WriteString("}")
+		sb.WriteString("]")
 
 		return sb.String()
 	case value.Map:
