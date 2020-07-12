@@ -114,16 +114,23 @@ func (g *BodyImplementation) MapDelete(mapValue, key value.Any) {
 }
 
 func (g *BodyImplementation) ForEach(array value.Any, indexName, valueName string) agnostic.BodyImplementation {
+	var forLoopParameter *Statement
 	if indexName == "" {
-		indexName = "_"
-	}
-
-	if valueName == "" {
-		valueName = "_"
+		if valueName == "" {
+			forLoopParameter = List()
+		} else {
+			forLoopParameter = List(Id("_"), Id(valueName)).Op(":=")
+		}
+	} else {
+		if valueName == "" {
+			forLoopParameter = List(Id(indexName)).Op(":=")
+		} else {
+			forLoopParameter = List(Id(indexName), Id(valueName)).Op(":=")
+		}
 	}
 
 	block := Null()
-	g.Add(For(Id(indexName).Op(",").Id(valueName).Op(":=").Range().Add(resolveValue(array, g))).Block(block))
+	g.Add(For(forLoopParameter.Range().Add(resolveValue(array, g))).Block(block))
 	return &BodyImplementation{
 		receiverName: g.receiverName,
 		block:        block,
