@@ -176,7 +176,7 @@ var ForSuite = Suite{
 				},
 				SideEffects: []SideEffect{
 					{
-						FieldName:     "SumElements",
+						FieldName:     "NumElements",
 						ExpectedValue: value.NewInt(0),
 					},
 				},
@@ -188,7 +188,7 @@ var ForSuite = Suite{
 				},
 				SideEffects: []SideEffect{
 					{
-						FieldName:     "SumElements",
+						FieldName:     "NumElements",
 						ExpectedValue: value.NewInt(3),
 					},
 				},
