@@ -53,12 +53,10 @@ func (i *Implementation) Add(code ...Code) {
 }
 
 func (i *Implementation) RegisterModel(modelName string, body *BodyImplementation) {
-	println(modelName)
 	i.modelBodies[modelName] = body
 }
 
 func (i *Implementation) AddOrphan(orphan *OrphanCode) {
-	println(orphan.belongsTo)
 	i.orphans = append(i.orphans, orphan)
 }
 
