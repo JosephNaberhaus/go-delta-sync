@@ -151,4 +151,48 @@ var ForSuite = Suite{
 			},
 		},
 	},
+	{
+		Name:        "ForEachNoLoopValues",
+		Description: "Computes the number of elements in the array using a for loop",
+		ModelFields: []agnostic.Field{
+			{Name: "NumElements", Type: types.BaseInt},
+		},
+		Parameters: []agnostic.Field{
+			{Name: "arrayInput", Type: types.NewArray(types.BaseInt)},
+		},
+		Generator: func(body agnostic.BodyImplementation) {
+			numElementsValue := value.NewOwnField(value.NewId("NumElements"))
+
+			body.Assign(numElementsValue, value.NewInt(0))
+
+			forEachBody := body.ForEach(value.NewId("arrayInput"), "", "")
+			forEachBody.Assign(numElementsValue, value.NewCombined(numElementsValue, value.Add, value.NewInt(1)))
+		},
+		Facts: []Fact{
+			{
+				Name: "EmptyArray",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt),
+				},
+				SideEffects: []SideEffect{
+					{
+						FieldName:     "SumElements",
+						ExpectedValue: value.NewInt(0),
+					},
+				},
+			},
+			{
+				Name: "PopulatedArray",
+				Inputs: []value.Any{
+					value.NewArray(types.BaseInt, value.NewInt(1), value.NewInt(10), value.NewInt(200)),
+				},
+				SideEffects: []SideEffect{
+					{
+						FieldName:     "SumElements",
+						ExpectedValue: value.NewInt(3),
+					},
+				},
+			},
+		},
+	},
 }
