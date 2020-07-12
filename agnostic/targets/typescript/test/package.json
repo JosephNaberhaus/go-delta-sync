@@ -2,7 +2,7 @@
   "name": "agnostic-typescript-implementation",
   "version": "0.0.0",
   "scripts": {
-    "test": "mocha implementation_test.ts --require ts-node/register"
+    "test": "mocha generated.test.ts --require ts-node/register"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",

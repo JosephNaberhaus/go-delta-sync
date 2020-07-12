@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const TestPreamble = `import {TestModel} from "./agnostic-test";
+const TestPreamble = `import {TestModel} from "./generated";
 import * as assert from "assert";
 describe('AgnosticTest', () => {
 `

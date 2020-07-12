@@ -1,2 +1,2 @@
-agnostic-test.go
-implementation_test.go
+generated.go
+generated_test.go

@@ -1,4 +1,4 @@
-//go:generate go run ../../scripts/generate-test.go --impl typescript
+//go:generate go run ../../scripts/generate-test.go --impl typescript --testSuffix .test
 
 package typescript
 
