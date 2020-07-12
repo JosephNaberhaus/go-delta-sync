@@ -29,7 +29,7 @@ func main() {
 	}
 
 	test.AllSuites.GenerateAgnostic(implementation)
-	implementation.Write("agnostic-test")
+	implementation.Write("test/agnostic-test")
 
 	testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
 	if err != nil {
@@ -37,5 +37,5 @@ func main() {
 	}
 
 	test.AllSuites.GenerateTests(testImplementation)
-	testImplementation.Write("implementation_test")
+	testImplementation.Write("test/implementation_test")
 }
