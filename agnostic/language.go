@@ -21,6 +21,16 @@ type Implementation interface {
 	// Go Code: type <name> struct { <fields> }
 	Model(name string, fields ...Field)
 
+	// Create an enumerated value. These only support integer values which will
+	// always follow the pattern: 0, 1, 2, ...
+	// Go Code:	type <name> int
+	// 			const (
+	//				<name>_<values[0]> <name> = iota
+	//				<name>_<values[1]>
+	//				...
+	//			)
+	Enum(name string, values ...string)
+
 	// Create a new method. A method is simply a function that runs under the
 	// context of a model and has direct access to its contents
 	// Go Code: func (<first character of modelName> *<modelName>) <methodName>(<parameters>) { <body> }

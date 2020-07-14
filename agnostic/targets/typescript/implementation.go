@@ -139,6 +139,17 @@ func (i *Implementation) Model(name string, fields ...agnostic.Field) {
 	i.RegisterModel(name, body)
 }
 
+func (i *Implementation) Enum(name string, values ...string) {
+	enumBody := NewBodyImplementation()
+	for _, v := range values {
+		enumBody.Add(Line(v))
+	}
+
+	i.Add(Line("enum " + name + "{"))
+	i.Add(enumBody)
+	i.Add(Line("}"))
+}
+
 func (i *Implementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	orphan := NewOrphanCode(modelName)
 	i.AddOrphan(orphan)

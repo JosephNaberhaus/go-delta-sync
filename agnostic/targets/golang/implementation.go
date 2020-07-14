@@ -48,6 +48,22 @@ func (g *Implementation) Model(modelName string, fields ...agnostic.Field) {
 	g.Add(Type().Id(string(modelName)).Struct(modelStructFields...))
 }
 
+func (g *Implementation) Enum(name string, values ...string) {
+	g.Add(Type().Id(name).Int())
+
+	enumValues := make([]Code, 0)
+	for i, v := range values {
+		valueName := name + "_" + v
+		if i == 0 {
+			enumValues = append(enumValues, Id(valueName).Id(name).Op(":=").Iota())
+		} else {
+			enumValues = append(enumValues, Id(valueName))
+		}
+	}
+
+	g.Add(Const().Defs(enumValues...))
+}
+
 func (g *Implementation) Method(modelName, methodName string, parameters ...agnostic.Field) agnostic.BodyImplementation {
 	receiverName := strings.ToLower(modelName[:1])
 	block := Null()
