@@ -1,10 +1,12 @@
 package test
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/types"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/blocks/value"
+	"os"
 )
 
 // A collection of tests
@@ -22,6 +24,19 @@ func ComposeSuites(suites ...Suite) Suite {
 	}
 
 	return composed
+}
+
+func (s Suite) RemoveLimitations(limitations Limitations) Suite {
+	suites := make(Suite, 0)
+
+	for _, c := range s {
+		_, inLimitations := limitations[c.Name]
+		if !inLimitations {
+			suites = append(suites, c)
+		}
+	}
+
+	return suites
 }
 
 // Generates the agnostic code (methods and models) for all test suites
@@ -108,4 +123,24 @@ type Fact struct {
 	Inputs      []value.Any  // Values to pass in a parameters or nil
 	SideEffects []SideEffect // Side effects of the method call or nil
 	Output      value.Any    // The output of the method or nil
+}
+
+// Map from a test case name to a justification of why the test doesn't work
+// for a given language
+type Limitations map[string]string
+
+func LoadLimitations(fileName string) (limitations Limitations, err error) {
+	file, err := os.Open(fileName)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	limitations = make(Limitations)
+	err = json.NewDecoder(file).Decode(&limitations)
+	if err != nil {
+		return nil, err
+	}
+
+	return
 }
