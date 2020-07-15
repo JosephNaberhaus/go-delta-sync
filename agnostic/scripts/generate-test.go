@@ -10,6 +10,7 @@ import (
 )
 
 const LimitationsFilePath = "test/limitations.json"
+const LimitationsReportFilePath = "limitations.md"
 
 // Script that takes builds both a test output file using the specified
 // implementation and a file that tests the functionality of that file
@@ -30,7 +31,8 @@ func main() {
 		panic(errors.New("implementation name/path is required"))
 	}
 
-	suite := test.AllSuites
+	var suite test.Suite
+	var removedCases []test.RemovedCase
 
 	println("Looking for language limitations file")
 	if _, err := os.Stat(LimitationsFilePath); err == nil {
@@ -41,9 +43,12 @@ func main() {
 			panic(err)
 		}
 
-		suite = suite.RemoveLimitations(limitations)
+		suite, removedCases = test.AllSuites.RemoveLimitations(limitations)
 	} else {
 		println("No limitations file found")
+
+		suite = test.AllSuites
+		removedCases = []test.RemovedCase{}
 	}
 
 	implementation, err := targets.CreateImplementation(implementationName, implementationArgs)
@@ -63,4 +68,10 @@ func main() {
 	println("Writing test files")
 	suite.GenerateTests(testImplementation)
 	testImplementation.Write("test/" + output + testSuffix)
+
+	println("Writing Limitations Report")
+	err = test.GenerateLimitationReport(LimitationsReportFilePath, removedCases)
+	if err != nil {
+		panic(err)
+	}
 }
