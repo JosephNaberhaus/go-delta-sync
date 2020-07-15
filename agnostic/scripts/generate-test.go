@@ -6,7 +6,10 @@ import (
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/scripts/input"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/targets"
 	"github.com/JosephNaberhaus/go-delta-sync/agnostic/test"
+	"os"
 )
+
+const LimitationsFilePath = "test/limitations.json"
 
 // Script that takes builds both a test output file using the specified
 // implementation and a file that tests the functionality of that file
@@ -27,12 +30,29 @@ func main() {
 		panic(errors.New("implementation name/path is required"))
 	}
 
+	suite := test.AllSuites
+
+	println("Looking for language limitations file")
+	if _, err := os.Stat(LimitationsFilePath); err == nil {
+		println("Found limitations file")
+		limitations, err := test.LoadLimitations(LimitationsFilePath)
+		if err != nil {
+			println("Couldn't load limitations file")
+			panic(err)
+		}
+
+		suite = suite.RemoveLimitations(limitations)
+	} else {
+		println("No limitations file found")
+	}
+
 	implementation, err := targets.CreateImplementation(implementationName, implementationArgs)
 	if err != nil {
 		panic(err)
 	}
 
-	test.AllSuites.GenerateAgnostic(implementation)
+	println("Write test agnostic code")
+	suite.GenerateAgnostic(implementation)
 	implementation.Write("test/" + output)
 
 	testImplementation, err := targets.CreateTestImplementation(implementationName, implementationArgs)
@@ -40,6 +60,7 @@ func main() {
 		panic(err)
 	}
 
-	test.AllSuites.GenerateTests(testImplementation)
+	println("Writing test files")
+	suite.GenerateTests(testImplementation)
 	testImplementation.Write("test/" + output + testSuffix)
 }

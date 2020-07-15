@@ -1,0 +1,3 @@
+{
+  "IntPastMaxSafeDoubleInteger": "The JavaScript engine stores all numbers as double precession IEEE-754 floating point numbers"
+}
