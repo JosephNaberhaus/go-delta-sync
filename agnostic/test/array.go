@@ -9,7 +9,7 @@ import (
 var ArraySuite = Suite{
 	{
 		Name:        "AppendValue",
-		Description: "Appends a value to an array and returns the result",
+		Description: "Support for appending a value to an array",
 		Parameters: []agnostic.Field{
 			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "value", Type: types.BaseInt},
@@ -40,7 +40,7 @@ var ArraySuite = Suite{
 	},
 	{
 		Name:        "AppendArray",
-		Description: "Appends a value to an array and returns the result",
+		Description: "Support for appending an array to another array",
 		Parameters: []agnostic.Field{
 			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "valueArray", Type: types.NewArray(types.BaseInt)},
@@ -79,7 +79,7 @@ var ArraySuite = Suite{
 	},
 	{
 		Name:        "Remove",
-		Description: "Removes a value from an array and returns the result",
+		Description: "Support for removing an index from an array",
 		Parameters: []agnostic.Field{
 			{Name: "inputArray", Type: types.NewArray(types.BaseInt)},
 			{Name: "index", Type: types.BaseInt},

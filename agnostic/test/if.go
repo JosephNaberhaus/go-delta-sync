@@ -9,7 +9,7 @@ import (
 var IfSuite = Suite{
 	{
 		Name:        "If",
-		Description: "Assigns the value to the model if it is even or 0 otherwise",
+		Description: "Support for if control flow",
 		ModelFields: []agnostic.Field{
 			{Name: "EvenNumber", Type: types.BaseInt},
 		},
@@ -53,7 +53,7 @@ var IfSuite = Suite{
 	},
 	{
 		Name:        "IfElse",
-		Description: "Returns the string \"even\" if a value is even and the string \"odd\" otherwise",
+		Description: "Support for if/else control flow",
 		Parameters: []agnostic.Field{
 			{Name: "value", Type: types.BaseInt},
 		},

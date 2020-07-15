@@ -9,7 +9,7 @@ import (
 var MapSuite = Suite{
 	{
 		Name:        "MapPut",
-		Description: "Puts a value into a map and returns it",
+		Description: "Support for putting a value into a map",
 		Returns:     types.NewMap(types.BaseInt, types.BaseString),
 		Parameters: []agnostic.Field{
 			{Name: "mapInput", Type: types.NewMap(types.BaseInt, types.BaseString)},
@@ -51,7 +51,7 @@ var MapSuite = Suite{
 	},
 	{
 		Name:        "MapDelete",
-		Description: "Deletes a key from a map if it exists ",
+		Description: "Support for deleting a value from a map",
 		Returns:     types.NewMap(types.BaseInt, types.BaseString),
 		Parameters: []agnostic.Field{
 			{Name: "mapInput", Type: types.NewMap(types.BaseInt, types.BaseString)},

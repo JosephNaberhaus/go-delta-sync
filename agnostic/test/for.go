@@ -9,7 +9,7 @@ import (
 var ForSuite = Suite{
 	{
 		Name:        "ForEachIndexAndElement",
-		Description: "Computes the sum of all elements in an array and the sum of all indices of an array",
+		Description: "Support for foreach loop with both a value and index variable",
 		ModelFields: []agnostic.Field{
 			{Name: "SumElements", Type: types.BaseInt},
 			{Name: "SumIndices", Type: types.BaseInt},
@@ -65,7 +65,7 @@ var ForSuite = Suite{
 	},
 	{
 		Name:        "ForEachIndexOnly",
-		Description: "Computes the sum of all indices of an array",
+		Description: "Support for foreach loop with a index variable but no value variable",
 		ModelFields: []agnostic.Field{
 			{Name: "SumIndices", Type: types.BaseInt},
 		},
@@ -109,7 +109,7 @@ var ForSuite = Suite{
 	},
 	{
 		Name:        "ForEachElementOnly",
-		Description: "Computes the sum of all elements in an array",
+		Description: "Support for foreach loop with a value variable but no index variable",
 		ModelFields: []agnostic.Field{
 			{Name: "SumElements", Type: types.BaseInt},
 		},
@@ -153,7 +153,7 @@ var ForSuite = Suite{
 	},
 	{
 		Name:        "ForEachNoLoopValues",
-		Description: "Computes the number of elements in the array using a for loop",
+		Description: "Support for foreach loop with no value or index variables",
 		ModelFields: []agnostic.Field{
 			{Name: "NumElements", Type: types.BaseInt},
 		},

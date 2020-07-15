@@ -14,7 +14,7 @@ import (
 var ValueSuite = Suite{
 	{
 		Name:        "Int",
-		Description: "Assigns models fields to various int type values",
+		Description: "Support for integer types",
 		ModelFields: []agnostic.Field{
 			{Name: "Int1", Type: types.BaseInt},
 			{Name: "Int2", Type: types.BaseInt},
@@ -35,7 +35,7 @@ var ValueSuite = Suite{
 	},
 	{
 		Name:        "IntPastMaxSafeFloatInteger",
-		Description: "Assigns models fields to various int type values that are past what can safely be represented in a IEE-754 floating point number",
+		Description: "Support for numbers outside of the range [-16777216, 16777216]",
 		ModelFields: []agnostic.Field{
 			{Name: "Int1", Type: types.BaseInt},
 			{Name: "Int2", Type: types.BaseInt},
@@ -56,7 +56,7 @@ var ValueSuite = Suite{
 	},
 	{
 		Name:        "IntPastMaxSafeDoubleInteger",
-		Description: "Assigns models fields to various int type values that are past what can safely be represented in a double precision IEE-754 floating point number",
+		Description: "Support for numbers outside of the range [-9007199254740992, 9007199254740992]",
 		ModelFields: []agnostic.Field{
 			{Name: "Int1", Type: types.BaseInt},
 			{Name: "Int2", Type: types.BaseInt},
