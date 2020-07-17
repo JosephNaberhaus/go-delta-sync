@@ -366,6 +366,8 @@ func resolveValue(any value.Any) string {
 		return resolveValue(v.Map()) + ".get(" + resolveValue(v.Key()) + ")"
 	case value.Combined:
 		return resolveValue(v.Left()) + " " + v.Operator().Value() + " " + resolveValue(v.Right())
+	case value.IntToString:
+		return "String(" + resolveValue(v.IntValue()) + ")"
 	default:
 		panic(errors.New(fmt.Sprintf("uknown type %T", v)))
 	}
