@@ -280,7 +280,7 @@ func resolveValue(any value.Any, optionalContext ...*BodyImplementation) *Statem
 	case value.Combined:
 		return resolveValue(v.Left(), context).Op(v.Operator().Value()).Add(resolveValue(v.Right(), context))
 	case value.IntToString:
-		return Qual("strconv", "Iota").Call(resolveValue(v.IntValue(), context))
+		return Qual("strconv", "Itoa").Call(resolveValue(v.IntValue(), context))
 	default:
 		panic(errors.New(fmt.Sprintf("uknown type %T", v)))
 	}
